@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Submit Project Details | Project Sumbission Portal | IIITA</title>
+        <title>Submit Project Details | Project Submission Portal | IIITA</title>
         <!--Import Google Icon Font-->
         <link href="../fonts/iconfont/material-icons.css" rel="stylesheet"/>
         <!--Import materialize.css-->
@@ -51,7 +51,7 @@
                     <ul class="right">
                         <li>Hi <%= s.getAttribute("name")%> ! &nbsp; </li>
                         <li><a href="#" data-activates="slide-out" class="navbar-button waves-effect"><i class="material-icons">view_module</i></a></li>
-                        <li><a class="waves-effect" href="#!">Logout</a></li>
+                        <li><a class="waves-effect" href="/Project/UserLogout">Logout</a></li>
                     </ul>
                 </div>
             </div>
@@ -83,7 +83,7 @@
                                 <li>Project details are to be filled after you have have decided the project and after thorough verification with your team members
                                     as the details cannot be edited later.</li>
                                 <li>Please keep the project title short yet which describes your project in the best way possible.</li>
-                                <li>Project keyword is the domain on which your project belongs to. Please choose a <b>maximum</b> of 3 domains only.</li>
+                                <li>Project keyword is the domain on which your project belongs to. Please choose a <b>maximum</b> of 3 keywords only.</li>
                                 <li>In the unlikely case of a rejection of your project after evaluation, please contact the admin immediately.</li>
                             </ul>
                         </div>
@@ -94,27 +94,30 @@
                 <div class="col l12">
                     <div class="card">
                         <div class="card-content">
-                            <%
-                                // check here if the student already has a project submitted
-                                // if yes put a dialog, else the form
-                            %>
                             <span class="card-title">Submit Project Details</span>
-                            <form>
+                            <%
+                                if (s.getAttribute("id") != null) {
+                            %>
+                            <p>You have already submitted the details for your project.</p>
+                            <%
+                            } else {
+                            %>
+                            <form method="post" action="/Project/AddProject">
                                 <div class="row">
                                     <div class="input-field col s6">
-                                        <input placeholder="Enter your project title" id="first_name" type="text" class="validate">
-                                        <label for="first_name">Project Title</label>
+                                        <input placeholder="Enter your project title" id="title" name="title" type="text" class="validate" required="required">
+                                        <label for="title">Project Title</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="input-field col s12">
-                                        <textarea id="textarea1" class="materialize-textarea" placeholder="Describe your project in 10-15 lines. Not more than 1000 characters."></textarea>
-                                        <label for="textarea1">Project Description</label>
+                                        <textarea id="description" name="description" class="materialize-textarea" placeholder="Describe your project in 10-15 lines. Not more than 1000 characters."  required="required"></textarea>
+                                        <label for="description">Project Description</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="input-field col s12">
-                                        <select>
+                                        <select id="guide" name="guide" required="required">
                                             <option value="" disabled selected>Choose your guide</option>
                                             <%                                                try {
                                                     BufferedReader br = new BufferedReader(new FileReader(application.getRealPath("/") + "\\project-guides.txt"));
@@ -132,12 +135,12 @@
                                                 }
                                             %>
                                         </select>
-                                        <label>Select Project Guide</label>
+                                        <label for="guide">Select Project Guide</label>
                                     </div>
                                 </div>
                                 <div class="row">
                                     <div class="input-field col s12">
-                                        <select multiple>
+                                        <select name="keywords" id="keywords" multiple>
                                             <option value="" disabled selected>Choose your option</option>
                                             <%
                                                 try {
@@ -151,44 +154,66 @@
                                             %>
                                             <option value="<%= keywordsResultSet.getString("id")%>"> &nbsp; <%= keywordsResultSet.getString("keyword")%></option>
                                             <%
+                                                    }
+                                                } catch (Exception ex) {
+                                                    // Log details
                                                 }
-
-                                            } catch (Exception ex) {
                                             %>
                                         </select>
-                                        <h3><%= ex.getMessage()%></h3>
-                                        <%
-                                            }
-                                        %>
-                                        </select>
-                                        <label>Select Project Keywords</label>
+                                        <label for="keywords">Select Project Keywords</label>
                                     </div>
                                 </div>
                                 <p>
-                                    <b>Note</b> - None of the above fields can be altered after submission. Please verify every field thoroughly before submission.
-                                </p>
-                                <br>
-                                <p>
-                                    <input type="checkbox" id="verify" />
-                                    <label for="verify">I have verified all the above fields to be true to the best of my knowledge.</label>
+                                    <b>Note</b> - Please enter your team members' enrollment numbers correctly in upper case (example, IIT2013001). If your team has less than 5 members leave the
+                                    last fields empty. An empty field in between non-empty entries will lead to improper team formation. Please enter the information carefully.
                                 </p>
                                 <br>
                                 <div class="row">
-                                    <div class="input-field col m6">
-                                        <input id="password" type="password" class="validate"/>
-                                        <label for="password">Re-enter password</label>
+                                    <div class="input-field col s6">
+                                        <input placeholder="Member Enrollment Number (In upper case)" id="member1" name="member1" type="text" class="validate" required="required" value="<%= s.getAttribute("rollNum") %>" >
+                                        <label for="member1">Team Member 1</label>
                                     </div>
                                 </div>
-                                <a class="waves-effect waves-light btn">Submit</a>
+                                <div class="row">
+                                    <div class="input-field col s6">
+                                        <input placeholder="Member Enrollment Number (In upper case)" id="member2" name="member2" type="text" class="validate">
+                                        <label for="member2">Team Member 2</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col s6">
+                                        <input placeholder="Member Enrollment Number (In upper case)" id="member3" name="member3" type="text" class="validate">
+                                        <label for="member3">Team Member 3</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col s6">
+                                        <input placeholder="Member Enrollment Number (In upper case)" id="member4" name="member4" type="text" class="validate">
+                                        <label for="member4">Team Member 4</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col s6">
+                                        <input placeholder="Member Enrollment Number (In upper case)" id="member5" name="member5" type="text" class="validate">
+                                        <label for="member5">Team Member 5</label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col m6">
+                                        <input id="password" name="password" type="password" class="validate"/>
+                                        <label for="password">Re-enter your password</label>
+                                    </div>
+                                </div>
+                                <button type="submit" class="waves-effect waves-light btn">Submit</button>
                             </form>
+                            <%
+                                }
+                            %>
                         </div>
                     </div>
                 </div>
             </div>
-
-
         </div>
-
         <footer class="page-footer light-blue">
             <div class="container">
                 <div class="row">

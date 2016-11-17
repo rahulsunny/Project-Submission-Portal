@@ -51,7 +51,7 @@
                     <ul class="right">
                         <li>Hi <%= s.getAttribute("name")%> ! &nbsp; </li>
                         <li><a href="#" data-activates="slide-out" class="navbar-button waves-effect"><i class="material-icons">view_module</i></a></li>
-                        <li><a class="waves-effect" href="#!">Logout</a></li>
+                        <li><a class="waves-effect" href="/Project/UserLogout">Logout</a></li>
                     </ul>
                 </div>
             </div>

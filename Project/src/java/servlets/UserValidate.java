@@ -84,7 +84,7 @@ public class UserValidate extends HttpServlet {
         String password = request.getParameter("password");
         
         try {
-            Class.forName("oracle.jdbc.driver.OracleDriver");
+            Class.forName(App.DRIVER_CLASS);
             Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
             PreparedStatement pst = con.prepareStatement("select name from students where roll_num = ? and password = ?");
 
@@ -122,6 +122,7 @@ public class UserValidate extends HttpServlet {
                 s.setMaxInactiveInterval(5 * 60);   // 5 minutes
                 s.setAttribute("name", name);
                 s.setAttribute("rollNum", rollNum);
+                s.setAttribute("password", password);
                 response.sendRedirect("/Project/user/");
             } else {
                 response.sendRedirect("/Project/");

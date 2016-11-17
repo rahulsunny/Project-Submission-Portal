@@ -10,7 +10,6 @@
 package classes;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +19,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 import javax.servlet.http.Part;
 
@@ -32,6 +30,8 @@ public class App {
     public static final String CONNECTION_PASSWORD = "hr";
     public static final TrieNode TITLE_WORDS_TRIE = new TrieNode(null);
     public static final LocalDate LOCK_DATE = LocalDate.of(2016, Month.MAY, 29);
+    public static final int ROLL_NUM_MIN_LENGTH = 10;
+    public static final int ROLL_NUM_MAX_LENGTH = 10;
 
     static {    // to initialise TITLE_WORDS_TRIE
         try {
