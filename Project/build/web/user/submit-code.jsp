@@ -16,7 +16,7 @@
         </style>
         <link href="../css/submit-code.css" rel="stylesheet"/>
     </head>
-    <body class="">
+    <body>
         <!-- SideNav -->
         <ul id="slide-out" class="side-nav">
             <li>

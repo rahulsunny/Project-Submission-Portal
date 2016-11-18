@@ -177,7 +177,7 @@ public final class search_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                                        <label>Select Project Keywords</label>\n");
       out.write("                                    </div>\n");
       out.write("                                </div>\n");
-      out.write("                                <!--                                <div class=\"row\">\n");
+      out.write("<!--                                                                <div class=\"row\">\n");
       out.write("                                                                    <div class=\"input-field col s12\">\n");
       out.write("                                                                        <select name=\"keywords\" name=\"keywords\" multiple>\n");
       out.write("                                                                            <option value=\"\" disabled selected>Choose your option</option>\n");

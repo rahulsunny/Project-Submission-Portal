@@ -88,7 +88,9 @@ public class Search extends HttpServlet {
         String title = request.getParameter("title");
         String[] keywords = request.getParameterValues("keywords[]");
         HashMap<Integer, Integer> map = new HashMap<>();
-
+        
+        
+        
         if (title != null && title.trim().length() > 0) {
             title = title.trim();
             String[] words = title.split("[ ]");
@@ -116,7 +118,7 @@ public class Search extends HttpServlet {
             for (String keywordId : keywords) {
                 System.out.println("Keyword id = " + keywordId);
                 ArrayList<Integer> ids = App.PROJECT_KEYWORDS_DICT.get(Integer.parseInt(keywordId));
-                
+                System.out.println("project ids for keywords = " + ids);
                 if (ids != null) {
                     for (int id : ids) {
                         if (map.containsKey(id)) {

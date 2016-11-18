@@ -60,7 +60,6 @@ public class App {
                             ArrayList<Integer> arr = PROJECT_TITLE_DICT.get(word);
                             
                             arr.add(id);
-                            PROJECT_TITLE_DICT.put(word, arr);
                         } else {
                             ArrayList<Integer> arr = new ArrayList<>();
                             
@@ -74,7 +73,6 @@ public class App {
                     ArrayList<Integer> arr = PROJECT_GUIDE_DICT.get(guide);
                     
                     arr.add(id);
-                    PROJECT_GUIDE_DICT.put(guide, arr);
                 } else {
                     ArrayList<Integer> arr = new ArrayList<>();
                     
@@ -98,7 +96,6 @@ public class App {
                     ArrayList<Integer> arr = PROJECT_KEYWORDS_DICT.get(keywordId);
                     
                     arr.add(projectId);
-                    PROJECT_KEYWORDS_DICT.put(keywordId, arr);
                 } else {
                     ArrayList<Integer> arr = new ArrayList<>();
                     
