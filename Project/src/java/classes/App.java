@@ -4,9 +4,11 @@
 
 /* ========== About App.java ==========
 
+Contains all the global config variables and
+methods which are frequently used as basic operations
 
+========== ========== ========== ========== */
 
- ========== ========== ========== ========== */
 package classes;
 
 import java.io.File;
@@ -20,6 +22,8 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.ArrayList;
+import java.util.HashMap;
 import javax.servlet.http.Part;
 
 public class App {
@@ -28,35 +32,87 @@ public class App {
     public static final String CONNECTION_STRING = "jdbc:oracle:thin:@localhost:1521:XE";
     public static final String CONNECTION_USERNAME = "hr";
     public static final String CONNECTION_PASSWORD = "hr";
-    public static final TrieNode TITLE_WORDS_TRIE = new TrieNode(null);
+    public static final HashMap<String, ArrayList<Integer>> PROJECT_TITLE_DICT = new HashMap<>(1000);
+    public static final HashMap<String, ArrayList<Integer>> PROJECT_GUIDE_DICT = new HashMap<>(1000);
+    public static final HashMap<Integer, ArrayList<Integer>> PROJECT_KEYWORDS_DICT = new HashMap<>(1000);
     public static final LocalDate LOCK_DATE = LocalDate.of(2016, Month.MAY, 29);
     public static final int ROLL_NUM_MIN_LENGTH = 10;
     public static final int ROLL_NUM_MAX_LENGTH = 10;
 
-    static {    // to initialise TITLE_WORDS_TRIE
+    static {    // to initialise PROJECT_TITLE_DICT
         try {
             Class.forName(DRIVER_CLASS);
             Connection con = DriverManager.getConnection(CONNECTION_STRING, CONNECTION_USERNAME, CONNECTION_PASSWORD);
             Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery("select id, title from projects");
+            ResultSet rs = st.executeQuery("select id, title, guide from projects");
 
             while (rs.next()) {
                 String title = rs.getString("title");
-                int key = rs.getInt("id");
+                int id = rs.getInt("id");
+                String guide = rs.getString("guide");
                 String[] words = title.split("[ ]");
 
                 for (String word : words) {
                     if (word.length() > 0) {
-                        TITLE_WORDS_TRIE.addWord(word, key);
+                        word = word.toLowerCase();
+                        
+                        if (PROJECT_TITLE_DICT.containsKey(word)) {
+                            ArrayList<Integer> arr = PROJECT_TITLE_DICT.get(word);
+                            
+                            arr.add(id);
+                            PROJECT_TITLE_DICT.put(word, arr);
+                        } else {
+                            ArrayList<Integer> arr = new ArrayList<>();
+                            
+                            arr.add(id);
+                            PROJECT_TITLE_DICT.put(word, arr);
+                        }
                     }
+                }
+                
+                if (PROJECT_GUIDE_DICT.containsKey(guide)) {
+                    ArrayList<Integer> arr = PROJECT_GUIDE_DICT.get(guide);
+                    
+                    arr.add(id);
+                    PROJECT_GUIDE_DICT.put(guide, arr);
+                } else {
+                    ArrayList<Integer> arr = new ArrayList<>();
+                    
+                    arr.add(id);
+                    PROJECT_GUIDE_DICT.put(guide, arr);
                 }
             }
 
             rs.close();
             st.close();
+            
+            st = con.createStatement();
+            rs = st.executeQuery("select * from project_keywords");
+            
+            while (rs.next()) {
+                int projectId = rs.getInt("project_id");
+                int keywordId = rs.getInt("keyword_id");
+                
+                // mapping from keyword to project
+                if (PROJECT_KEYWORDS_DICT.containsKey(keywordId)) {
+                    ArrayList<Integer> arr = PROJECT_KEYWORDS_DICT.get(keywordId);
+                    
+                    arr.add(projectId);
+                    PROJECT_KEYWORDS_DICT.put(keywordId, arr);
+                } else {
+                    ArrayList<Integer> arr = new ArrayList<>();
+                    
+                    arr.add(projectId);
+                    PROJECT_KEYWORDS_DICT.put(keywordId, arr);
+                }
+            }
+            
+            rs.close();
+            st.close();
             con.close();
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
+            ex.printStackTrace();
         }
     }
 

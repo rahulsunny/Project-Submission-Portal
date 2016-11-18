@@ -88,7 +88,7 @@
                                 </div>
                                 <div class="row">
                                     <div class="input-field col s12">
-                                        <select name="keywords" name="keywords" multiple>
+                                        <select name="keywords" multiple>
                                             <option value="" disabled selected>Choose your option</option>
                                             <%
 
@@ -116,6 +116,35 @@
                                         <label>Select Project Keywords</label>
                                     </div>
                                 </div>
+<!--                                                                <div class="row">
+                                                                    <div class="input-field col s12">
+                                                                        <select name="keywords" name="keywords" multiple>
+                                                                            <option value="" disabled selected>Choose your option</option>
+                                <%
+                                    try {
+                                        Class.forName(App.DRIVER_CLASS);
+                                        Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
+                                        Statement keywordsStatement = con.createStatement();
+                                        String keywordsQuery = "select * from keywords order by keyword";
+                                        ResultSet keywordsResultSet = keywordsStatement.executeQuery(keywordsQuery);
+
+                                        while (keywordsResultSet.next()) {
+                                %>
+                                <option value="<%= keywordsResultSet.getString("id")%>"> &nbsp; <%= keywordsResultSet.getString("keyword")%></option>
+                                <%
+                                    }
+
+                                } catch (Exception ex) {
+                                %>
+                            </select>
+                            <h3><%= ex.getMessage()%></h3>
+                                <%
+                                    }
+                                %>
+                                </select>
+                                <label>Select Guide</label>
+                            </div>
+                        </div>-->
                                 <button type="button" class="waves-effect waves-light btn" onclick="searchProjects()">Search</button>
                             </form>
                         </div>
@@ -181,32 +210,18 @@
 
                                     function searchProjectsCallback(data) {
                                         $('#results').empty();
+                                        
+                                        if (data.fail === "No projects found.") {
+                                            var html = '<div class="card grey lighten-5">' +
+                                                    '<div class="card-content">' +
+                                                    '<p>' + data.fail + '</p>' +
+                                                    '</div>' +
+                                                    '</div>';
+                                            $('#results').append(html);
+                                            return;
+                                        }
 
                                         $(data).each(function (index) {
-//                    var html = 
-//                    '<div class="card grey lighten-5">' +
-//                        '<div class="card-content">' +
-//                            '<span class="card-title">' + data[index].title + '</span>' +
-//                            '<p>' + data[index].description + '</p>' +
-//                            '<br>' +
-//                            '<p>Project Group Members -</p>' +
-//                            '<ul>' +
-//                                '<li>Ojusvini Agarwal (RIT2013001)</li>' +
-//                                '<li>Saniya Nejeeb (RIT2013002)</li>' +
-//                                '<li>Shanmukh Dundigalla (RIT2013003)</li>' +
-//                            '</ul>' +
-//                            '<p>Project Guide - ' + data[index].guide + '</p><br>' +
-//                            '<a href="#"><div class="chip">Image Processing</div></a>' +
-//                            '<a href="#"><div class="chip">Algorithms</div></a>' +
-//                            '<a href="#"><div class="chip">Android Development</div></a>' +
-//                        '</div>' +
-//                        '<div class="card-action">' +
-//                            '<a href="#" class="waves-effect waves-d btn white black-text">Download Project Report</a> &nbsp; ' +
-//                            '<a href="#" class="waves-effect waves-d btn white black-text">Download PPT</a> &nbsp; ' +
-//                            '<a href="#" class="waves-effect waves-d btn white black-text">Download Code</a> &nbsp; ' +
-//                        '</div>' +
-//                    '</div>';
-
                                             var html =
                                                     '<div class="card grey lighten-5">' +
                                                     '<div class="card-content">' +

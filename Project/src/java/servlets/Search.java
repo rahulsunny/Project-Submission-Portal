@@ -85,25 +85,53 @@ public class Search extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/json");
         PrintWriter pw = response.getWriter();
-
         String title = request.getParameter("title");
-        String[] keywords = request.getParameterValues("keywords");
-        String[] words = title.split("[ ]");
-
+        String[] keywords = request.getParameterValues("keywords[]");
         HashMap<Integer, Integer> map = new HashMap<>();
 
-        for (String word : words) {
-            if (word.length() > 0) {
-                ArrayList<Integer> ids = App.TITLE_WORDS_TRIE.wordQuery(word);
+        if (title != null && title.trim().length() > 0) {
+            title = title.trim();
+            String[] words = title.split("[ ]");
 
-                for (int id : ids) {
-                    if (map.get(id) == null) {
-                        map.put(id, 1);
-                    } else {
-                        map.put(id, map.get(id) + 1);
+            for (String word : words) {
+                word = word.trim().toLowerCase();
+
+                if (word.length() > 0) {
+                    ArrayList<Integer> ids = App.PROJECT_TITLE_DICT.get(word);
+
+                    if (ids != null) {
+                        for (int id : ids) {
+                            if (map.containsKey(id)) {
+                                map.put(id, map.get(id) + 1);
+                            } else {
+                                map.put(id, 1);
+                            }
+                        }
                     }
                 }
             }
+        }
+
+        if (keywords != null) {
+            for (String keywordId : keywords) {
+                System.out.println("Keyword id = " + keywordId);
+                ArrayList<Integer> ids = App.PROJECT_KEYWORDS_DICT.get(Integer.parseInt(keywordId));
+                
+                if (ids != null) {
+                    for (int id : ids) {
+                        if (map.containsKey(id)) {
+                            map.put(id, map.get(id) + 1);
+                        } else {
+                            map.put(id, 1);
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (map.isEmpty()) {
+            pw.println("{\"fail\":\"No projects found.\"}");
+            return;
         }
 
         PriorityQueue<MaxHeapNode> heap = new PriorityQueue<>();
@@ -115,7 +143,7 @@ public class Search extends HttpServlet {
 
         ArrayList<Project> results = new ArrayList<>();
 
-        for (int i = 0; i < 10 && !heap.isEmpty(); ++i) {
+        for (int i = 0; i < 15 && !heap.isEmpty(); ++i) {
             int id = heap.poll().num;
 
             try {
@@ -163,7 +191,7 @@ public class Search extends HttpServlet {
                             project.memberNames.add(membersResultSet.getString("name"));
                             project.memberRollNumbers.add(membersResultSet.getString("roll_num"));
                         }
-                        
+
                         membersResultSet.close();
                         membersStatement.close();
                     }
@@ -180,11 +208,11 @@ public class Search extends HttpServlet {
                         while (keywordsResultSet.next()) {
                             project.keywords.add(keywordsResultSet.getString("keyword"));
                         }
-                        
+
                         keywordsResultSet.close();
                         keywordsStatement.close();
                     }
-                    
+
                     results.add(project);
                 }
 
