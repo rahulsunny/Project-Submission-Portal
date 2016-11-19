@@ -24,9 +24,11 @@ create table students
 create table student_notifications
 (
 	id number(*, 0) constraint STUDENT_NOTIF_ID primary key,
+	roll_num varchar2(10),
 	message varchar2(500) constraint STUDENT_NOTIF_MESSAGE_NN not null,
 	notification_date date constraint STUDENT_NOTIF_DATE_NN not null,
-	seen varchar2(1) constraint STUDENT_NOTIF_SEEN_CHECK check(seen = 'Y' or seen = 'N')
+	seen varchar2(1) constraint STUDENT_NOTIF_SEEN_CHECK check(seen = 'Y' or seen = 'N'),
+	constraint STUDENT_NOTIF_FK foreign key (roll_num) references students(roll_num) on delete cascade
 );
 
 -- default maxvalue of sequence is 999999999999999999999999999
@@ -52,9 +54,11 @@ create sequence guides_id_seq
 create table guide_notifications
 (
 	id number(*, 0) constraint GUIDE_NOTIF_ID primary key,
+	guide_id number(*, 0),
 	message varchar2(500) constraint GUIDE_NOTIF_MESSAGE_NN not null,
 	notification_date date constraint GUIDE_NOTIF_DATE_NN not null,
-	seen varchar2(1) constraint GUIDE_NOTIF_SEEN_CHECK check(seen = 'Y' or seen = 'N')
+	seen varchar2(1) constraint GUIDE_NOTIF_SEEN_CHECK check(seen = 'Y' or seen = 'N'),
+	constraint GUIDE_NOTIF_FK foreign key (guide_id) references guides(id) on delete cascade
 );
 
 create sequence guide_notifications_id_seq 
@@ -67,9 +71,10 @@ create table projects
 	id number(*, 0) constraint PROJECTS_ID_PK primary key,
 	project_date date constraint PROJECTS_DATE_NN not null,
 	title varchar2(100) constraint PROJECTS_TITLE_NN not null,
-	guide_id number(*, 0) constraint PROJECTS_GUIDE_FK not null,
+	guide_id number(*, 0),
 	description varchar2(1000) constraint PROJECTS_DESC_NN not null,
-	locked varchar2(1) constraint PROJECTS_LOCKED_CHECK check(locked = 'Y' or locked = 'N')
+	locked varchar2(1) constraint PROJECTS_LOCKED_CHECK check(locked = 'Y' or locked = 'N'),
+	constraint PROJECTS_GUIDE_ID_FK foreign key (guide_id) references guides(id) on delete cascade
 );
 
 create sequence projects_id_seq 
@@ -82,8 +87,8 @@ create table project_members
 	project_id number(*, 0),
 	roll_num varchar2(10),
   	constraint PROJECT_MEMBERS_COMPOSITE_PK primary key (project_id, roll_num),
-  	constraint PROJECT_MEMBERS_PROJECT_ID_FK foreign key (project_id) references projects(id),
-  	constraint PROJECT_MEMBERS_ROLL_NUM_FK foreign key (roll_num) references students(roll_num)
+  	constraint PROJECT_MEMBERS_PROJECT_ID_FK foreign key (project_id) references projects(id) on delete cascade,
+  	constraint PROJECT_MEMBERS_ROLL_NUM_FK foreign key (roll_num) references students(roll_num) on delete cascade
 );
 
 create table keywords 
@@ -102,8 +107,8 @@ create table project_keywords
 	project_id number(*, 0),
 	keyword_id number(*, 0),
   	constraint PROJECT_KEYWORDS_COMPOSITE_PK primary key (project_id, keyword_id),
-  	constraint PROJECT_KEYWORDS_PROJECT_ID_FK foreign key (project_id) references projects(id),
-  	constraint PROJECT_KEYWORDS_KEYWORD_ID foreign key (keyword_id) references keywords(id)
+  	constraint PROJECT_KEYWORDS_PROJECT_ID_FK foreign key (project_id) references projects(id) on delete cascade,
+  	constraint PROJECT_KEYWORDS_KEYWORD_ID foreign key (keyword_id) references keywords(id) on delete cascade
 );
 
 -- students table rows
