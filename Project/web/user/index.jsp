@@ -1,4 +1,4 @@
-<%@page import="classes.App, java.sql.*"%>
+<%@page import="classes.App, java.sql.*, java.time.*, java.time.format.* "%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -69,28 +69,24 @@
             <div class="row">
                 <div class="col l12">
                     <%
-                        String log = "";
                         try {
                             Class.forName(App.DRIVER_CLASS);
                             Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
                             Statement projectStatement = con.createStatement();
 
-                            String query = "select id, title, guide, description, report, ppt, code_directory from projects "
-                                    + "where to_char(project_date, 'YYYY') = to_char(sysdate, 'YYYY') and "
-                                    + "( "
-                                    + "(to_char(project_date, 'MM') <= '06' and to_char(sysdate, 'MM') <= '06') "
-                                    + "or "
-                                    + "(to_char(project_date, 'MM') > '06' and to_char(sysdate, 'MM') > '06') "
-                                    + ")";
+                            String query = "select projects.id, title, description, name, project_date"
+                                    + " from projects join guides on projects.guide_id = guides.id"
+                                    + " where projects.locked = 'N'";
 
-                            log = query;
                             ResultSet rs = projectStatement.executeQuery(query);
 
                             while (rs.next()) {
+                                String project_date = rs.getDate("project_date").toLocalDate().format(DateTimeFormatter.ofPattern("MMMM dd, uuuu"));
                     %>
                     <div class="card grey lighten-5">
                         <div class="card-content">
-                            <span class="card-title"><%= rs.getString("title")%></span>
+                            <span class="card-title"><%= rs.getString("title")%></span><br>
+                            <small><%= project_date %></small><br><br>
                             <p><%= rs.getString("description")%></p>
                             <br>
                             <p>Project Group Members -</p>
@@ -115,7 +111,7 @@
                                         }
                                     %>
                             </ul>
-                            <p>Project Guide - <%= rs.getString("guide")%></p><br>
+                            <p>Project Guide - <%= rs.getString("name")%></p><br>
                             <%
                                 {
                                     Statement keywordsStatement = con.createStatement();
@@ -146,12 +142,10 @@
 
                         con.close();
                     } catch (Exception ex) {
-                    %>
-                    <h3>Error - <%= ex.getMessage()%></h3>
-                    <h4><%= log%></h4>
-                    <%
-                        }
-
+                        %>
+                        <p><%= ex.getMessage() %></p>
+                        <%
+                    }
                     %>
                 </div>
             </div>

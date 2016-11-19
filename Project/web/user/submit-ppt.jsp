@@ -100,7 +100,7 @@
                                 You have already submitted a presentation for your project. You can view it below.
                             </p>
                             <br>
-                            <object data="<%= fileRelativeLocation%>" type="application/pdf" width="100%" height="650px">
+                            <object data="<%= fileRelativeLocation %>" type="application/pdf" width="100%" height="650px">
                                 <p>Project Presentation</p>
                             </object>
                             <%

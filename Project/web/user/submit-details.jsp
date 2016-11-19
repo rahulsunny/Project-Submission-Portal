@@ -118,20 +118,29 @@
                                 <div class="row">
                                     <div class="input-field col s12">
                                         <select id="guide" name="guide" required="required">
-                                            <option value="" disabled selected>Choose your guide</option>
-                                            <%                                                try {
-                                                    BufferedReader br = new BufferedReader(new FileReader(application.getRealPath("/") + "\\project-guides.txt"));
-                                                    String line;
+                                            <option disabled selected>Choose your guide</option>
+                                            <%
+                                                // generate guide options
+                                                try {
+                                                    Class.forName(App.DRIVER_CLASS);
+                                                    Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
+                                                    Statement st = con.createStatement();
+                                                    ResultSet rs = st.executeQuery("select id, name from guides where available = 'Y' order by name");
 
-                                                    while ((line = br.readLine()) != null) {
+                                                    while (rs.next()) {
+                                                        int guideId = rs.getInt("id");
+                                                        String name = rs.getString("name");
+
                                             %>
-                                            <option value="<%= line%>"><%= line%></option>
+                                            <option value="<%= guideId %>"><%= name%></option>
                                             <%
                                                     }
 
-                                                    br.close();
+                                                    rs.close();
+                                                    st.close();
+                                                    con.close();
                                                 } catch (Exception ex) {
-                                                    System.out.println("Exception in submit-details.jsp - " + ex.getLocalizedMessage());
+                                                    // Log details
                                                 }
                                             %>
                                         </select>
@@ -170,7 +179,7 @@
                                 <br>
                                 <div class="row">
                                     <div class="input-field col s6">
-                                        <input placeholder="Member Enrollment Number (In upper case)" id="member1" name="member1" type="text" class="validate" required="required" value="<%= s.getAttribute("rollNum") %>" >
+                                        <input placeholder="Member Enrollment Number (In upper case)" id="member1" name="member1" type="text" class="validate" required="required" value="<%= s.getAttribute("rollNum")%>" >
                                         <label for="member1">Team Member 1</label>
                                     </div>
                                 </div>

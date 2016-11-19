@@ -56,7 +56,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("        <!--Let browser know website is optimized for mobile-->\n");
       out.write("        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n");
       out.write("    </head>\n");
-      out.write("    <body class=\"\">\n");
+      out.write("    <body>\n");
       out.write("        <!-- SideNav -->\n");
       out.write("        <ul id=\"slide-out\" class=\"side-nav\">\n");
       out.write("            <li>\n");
@@ -68,13 +68,16 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                <a class=\"subheader\">Submit</a>\n");
       out.write("            </li>\n");
       out.write("            <li>\n");
-      out.write("                <a href=\"submit-details.html\" class=\"waves-effect\">Submit Project Report</a>\n");
+      out.write("                <a href=\"submit-details.jsp\" class=\"waves-effect\">Submit Project Details</a>\n");
       out.write("            </li>\n");
       out.write("            <li>\n");
-      out.write("                <a href=\"submit-ppt.html\" class=\"waves-effect\">Submit Project PPT</a>\n");
+      out.write("                <a href=\"submit-report.jsp\" class=\"waves-effect\">Submit Project Report</a>\n");
       out.write("            </li>\n");
       out.write("            <li>\n");
-      out.write("                <a href=\"submit-code.html\" class=\"waves-effect\">Submit Project Code</a>\n");
+      out.write("                <a href=\"submit-ppt.jsp\" class=\"waves-effect\">Submit Project PPT</a>\n");
+      out.write("            </li>\n");
+      out.write("            <li>\n");
+      out.write("                <a href=\"submit-code.jsp\" class=\"waves-effect\">Submit Project Code</a>\n");
       out.write("            </li>\n");
       out.write("            <li><div class=\"divider\"></div></li>\n");
       out.write("            <li>\n");
@@ -116,21 +119,15 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                <div class=\"col l12\">\n");
       out.write("                    ");
 
-                        String log = "";
                         try {
                             Class.forName(App.DRIVER_CLASS);
                             Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
                             Statement projectStatement = con.createStatement();
 
-                            String query = "select id, title, guide, description, report, ppt, code_directory from projects "
-                                    + "where to_char(project_date, 'YYYY') = to_char(sysdate, 'YYYY') and "
-                                    + "( "
-                                    + "(to_char(project_date, 'MM') <= '06' and to_char(sysdate, 'MM') <= '06') "
-                                    + "or "
-                                    + "(to_char(project_date, 'MM') > '06' and to_char(sysdate, 'MM') > '06') "
-                                    + ")";
+                            String query = "select projects.id, title, description, name, project_date"
+                                    + " from projects join guides on projects.guide_id = guides.id"
+                                    + " where projects.locked = 'N'";
 
-                            log = query;
                             ResultSet rs = projectStatement.executeQuery(query);
 
                             while (rs.next()) {
@@ -153,7 +150,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
                                         Statement membersStatement = con.createStatement();
                                         String membersQuery = "select students.roll_num, name from students "
                                                 + "join project_members on students.ROLL_NUM = project_members.ROLL_NUM "
-                                                + "where project_members.PROJECT_ID = " + rs.getString("id");
+                                                + "where project_members.PROJECT_ID = " + rs.getString("projects.id");
 
                                         ResultSet membersResultSet = membersStatement.executeQuery(membersQuery);
 
@@ -177,7 +174,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\n");
       out.write("                            </ul>\n");
       out.write("                            <p>Project Guide - ");
-      out.print( rs.getString("guide"));
+      out.print( rs.getString("name"));
       out.write("</p><br>\n");
       out.write("                            ");
 
@@ -185,7 +182,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
                                     Statement keywordsStatement = con.createStatement();
                                     String keywordsQuery = "select keyword from keywords "
                                             + "join project_keywords on project_keywords.keyword_id = keywords.id "
-                                            + "where project_keywords.project_id = " + rs.getString("id");
+                                            + "where project_keywords.project_id = " + rs.getString("project.id");
                                     ResultSet keywordsResultSet = keywordsStatement.executeQuery(keywordsQuery);
 
                                     while (keywordsResultSet.next()) {
@@ -216,18 +213,8 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
 
                         con.close();
                     } catch (Exception ex) {
-                    
-      out.write("\n");
-      out.write("                    <h3>Error - ");
-      out.print( ex.getMessage());
-      out.write("</h3>\n");
-      out.write("                    <h4>");
-      out.print( log);
-      out.write("</h4>\n");
-      out.write("                    ");
-
-                        }
-
+                        // log error
+                    }
                     
       out.write("\n");
       out.write("                </div>\n");

@@ -93,7 +93,7 @@ public class AddProject extends HttpServlet {
 
         String title = request.getParameter("title");
         String description = request.getParameter("description");
-        String guide = request.getParameter("guide");
+        int guide = Integer.parseInt(request.getParameter("guide"));
         String[] keywords = request.getParameterValues("keywords");
 
         if (keywords.length > 3) {
@@ -137,7 +137,7 @@ public class AddProject extends HttpServlet {
             rs.next();
             int id = rs.getInt(1);
 
-            String query = "insert into projects values (?, TO_DATE(?, 'DD-MM-YY'), ?, ?, ?, null, null, null)";
+            String query = "insert into projects values (?, TO_DATE(?, 'DD-MM-YY'), ?, ?, ?, 'N')";
             PreparedStatement pst = con.prepareStatement(query);
             LocalDate date = LocalDate.now();
             DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-uuuu");
@@ -145,7 +145,7 @@ public class AddProject extends HttpServlet {
             pst.setInt(1, id);
             pst.setString(2, date.format(format));
             pst.setString(3, title);
-            pst.setString(4, guide);
+            pst.setInt(4, guide);
             pst.setString(5, description);
 
             int count = pst.executeUpdate();
@@ -227,11 +227,20 @@ public class AddProject extends HttpServlet {
                         
                         arr.add(id);
                     } else {
-                        ArrayList<Integer> arr = new ArrayList<Integer>();
+                        ArrayList<Integer> arr = new ArrayList<>();
                         
                         arr.add(id);
                         App.PROJECT_KEYWORDS_DICT.put(keyId, arr);
                     }
+                }
+                
+                if (App.PROJECT_GUIDE_DICT.containsKey(guide)) {
+                    App.PROJECT_GUIDE_DICT.get(guide).add(id);
+                } else {
+                    ArrayList<Integer> arr = new ArrayList<>();
+                    
+                    arr.add(id);
+                    App.PROJECT_GUIDE_DICT.put(guide, arr);
                 }
             }
 

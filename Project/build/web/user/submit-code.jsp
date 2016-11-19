@@ -28,10 +28,10 @@
                 <a class="subheader">Submit</a>
             </li>
             <li>
-                <a href="submit-report.jsp" class="waves-effect">Submit Project Details</a>
+                <a href="submit-details.jsp" class="waves-effect">Submit Project Details</a>
             </li>
             <li>
-                <a href="submit-details.html" class="waves-effect">Submit Project Report</a>
+                <a href="submit-report.jsp" class="waves-effect">Submit Project Report</a>
             </li>
             <li>
                 <a href="submit-ppt.html" class="waves-effect">Submit Project PPT</a>

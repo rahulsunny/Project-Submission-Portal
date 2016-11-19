@@ -23,7 +23,7 @@
                 <a class="subheader">Submit</a>
             </li>
             <li>
-                <a href="submit-report.jsp" class="waves-effect">Submit Project Details</a>
+                <a href="submit-details.jsp" class="waves-effect">Submit Project Details</a>
             </li>
             <li>
                 <a href="submit-report.jsp" class="waves-effect">Submit Project Report</a>
@@ -116,35 +116,35 @@
                                         <label>Select Project Keywords</label>
                                     </div>
                                 </div>
-<!--                                                                <div class="row">
-                                                                    <div class="input-field col s12">
-                                                                        <select name="keywords" name="keywords" multiple>
-                                                                            <option value="" disabled selected>Choose your option</option>
-                                <%
-                                    try {
-                                        Class.forName(App.DRIVER_CLASS);
-                                        Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
-                                        Statement keywordsStatement = con.createStatement();
-                                        String keywordsQuery = "select * from keywords order by keyword";
-                                        ResultSet keywordsResultSet = keywordsStatement.executeQuery(keywordsQuery);
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <select name="guides" multiple>
+                                            <option disabled selected>Choose your option</option>
+                                            <%
+                                                try {
+                                                    Class.forName(App.DRIVER_CLASS);
+                                                    Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
+                                                    Statement guideStatement = con.createStatement();
+                                                    String guideQuery = "select id, name from guides order by name";
+                                                    ResultSet guideResultSet = guideStatement.executeQuery(guideQuery);
 
-                                        while (keywordsResultSet.next()) {
-                                %>
-                                <option value="<%= keywordsResultSet.getString("id")%>"> &nbsp; <%= keywordsResultSet.getString("keyword")%></option>
-                                <%
-                                    }
+                                                    while (guideResultSet.next()) {
+                                            %>
+                                            <option value="<%= guideResultSet.getInt("id")%>"> &nbsp; <%= guideResultSet.getString("name")%></option>
+                                            <%
+                                                }
 
-                                } catch (Exception ex) {
-                                %>
-                            </select>
-                            <h3><%= ex.getMessage()%></h3>
-                                <%
-                                    }
-                                %>
-                                </select>
-                                <label>Select Guide</label>
-                            </div>
-                        </div>-->
+                                            } catch (Exception ex) {
+                                            %>
+                                        </select>
+                                        <h3><%= ex.getMessage()%></h3>
+                                        <%
+                                            }
+                                        %>
+                                        </select>
+                                        <label>Select Guide</label>
+                                    </div>
+                                </div>
                                 <button type="button" class="waves-effect waves-light btn" onclick="searchProjects()">Search</button>
                             </form>
                         </div>
@@ -200,17 +200,22 @@
                                         $('select').material_select();
                                     });
 
+                                    $(document).ready(function () {
+                                        $('.tooltipped').tooltip({delay: 50});
+                                    });
+
                                     function searchProjects() {
                                         $.post("/Project/Search",
                                                 {
                                                     title: $('input[name="title"]').val(),
-                                                    keywords: $('select[name="keywords"]').val()
+                                                    keywords: $('select[name="keywords"]').val(),
+                                                    guides : $('select[name="guides"]').val()
                                                 }, searchProjectsCallback);
                                     }
 
                                     function searchProjectsCallback(data) {
                                         $('#results').empty();
-                                        
+
                                         if (data.fail === "No projects found.") {
                                             var html = '<div class="card grey lighten-5">' +
                                                     '<div class="card-content">' +
@@ -222,10 +227,18 @@
                                         }
 
                                         $(data).each(function (index) {
+                                            var lock = '';
+                                            
+                                            if (data[index].locked === "Y") {
+                                                lock = '<a class="tooltipped right-align" data-position="right" data-delay="50" data-tooltip="This project has been completed and evaluated.">' +
+                                                    '<span style="font-size:19pt;"><i class="tiny material-icons">done</i></span></a>';
+                                            }
+                                            
                                             var html =
                                                     '<div class="card grey lighten-5">' +
                                                     '<div class="card-content">' +
-                                                    '<span class="card-title">' + data[index].title + '</span>' +
+                                                    '<span class="card-title">' + data[index].title + '</span> &nbsp;' + lock + '<br>' +
+                                                    '<small>' + data[index].project_date + '</small><br>' +
                                                     '<p>' + data[index].description + '</p>' +
                                                     '<br>' +
                                                     '<p>Project Group Members -</p>' +
@@ -256,6 +269,8 @@
 
                                             $('#results').append(html);
                                         });
+                                        
+                                        $('.tooltipped').tooltip({delay: 50});
                                     }
         </script>
     </body>

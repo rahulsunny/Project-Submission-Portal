@@ -14,6 +14,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
@@ -87,9 +88,8 @@ public class Search extends HttpServlet {
         PrintWriter pw = response.getWriter();
         String title = request.getParameter("title");
         String[] keywords = request.getParameterValues("keywords[]");
+        String[] guides = request.getParameterValues("guides[]");
         HashMap<Integer, Integer> map = new HashMap<>();
-        
-        
         
         if (title != null && title.trim().length() > 0) {
             title = title.trim();
@@ -99,10 +99,10 @@ public class Search extends HttpServlet {
                 word = word.trim().toLowerCase();
 
                 if (word.length() > 0) {
-                    ArrayList<Integer> ids = App.PROJECT_TITLE_DICT.get(word);
+                    ArrayList<Integer> projects = App.PROJECT_TITLE_DICT.get(word);
 
-                    if (ids != null) {
-                        for (int id : ids) {
+                    if (projects != null) {
+                        for (int id : projects) {
                             if (map.containsKey(id)) {
                                 map.put(id, map.get(id) + 1);
                             } else {
@@ -117,10 +117,27 @@ public class Search extends HttpServlet {
         if (keywords != null) {
             for (String keywordId : keywords) {
                 System.out.println("Keyword id = " + keywordId);
-                ArrayList<Integer> ids = App.PROJECT_KEYWORDS_DICT.get(Integer.parseInt(keywordId));
-                System.out.println("project ids for keywords = " + ids);
-                if (ids != null) {
-                    for (int id : ids) {
+                ArrayList<Integer> projects = App.PROJECT_KEYWORDS_DICT.get(Integer.parseInt(keywordId));
+                System.out.println("project ids for keywords = " + projects);
+                if (projects != null) {
+                    for (int id : projects) {
+                        if (map.containsKey(id)) {
+                            map.put(id, map.get(id) + 1);
+                        } else {
+                            map.put(id, 1);
+                        }
+                    }
+                }
+            }
+        }
+        
+        if (guides != null) {
+            for (String guide : guides) {
+                int guideId = Integer.parseInt(guide);
+                ArrayList<Integer> projects = App.PROJECT_GUIDE_DICT.get(guideId);
+                
+                if (projects != null) {
+                    for (int id : projects) {
                         if (map.containsKey(id)) {
                             map.put(id, map.get(id) + 1);
                         } else {
@@ -151,7 +168,7 @@ public class Search extends HttpServlet {
             try {
                 Class.forName(App.DRIVER_CLASS);
                 Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
-                String query = "select to_char(project_date, 'YYYY') as year, to_char(project_date, 'MM') as month, title, guide, description, report, ppt, code_directory from projects where id = ?";
+                String query = "select project_date, title, guide_id, description, locked from projects where id = ?";
                 PreparedStatement pst = con.prepareStatement(query);
 
                 pst.setInt(1, id);
@@ -159,25 +176,32 @@ public class Search extends HttpServlet {
                 ResultSet rs = pst.executeQuery();
 
                 while (rs.next()) {
-                    String project_date;
-                    int month = Integer.parseInt(rs.getString("month"));
+                    String project_date = rs.getDate("project_date").toLocalDate().format(DateTimeFormatter.ofPattern("MMMM dd, uuuu"));
+                    String guide = "NA";
+                    
+                    // Query for guide name
+                    {
+                        String guideQuery = "select name from guides where id = ?";
+                        PreparedStatement guideStatement = con.prepareStatement(guideQuery);
 
-                    if (month <= 6) {
-                        project_date = "Even Semester - ";
-                    } else {
-                        project_date = "Odd Semester - ";
+                        guideStatement.setInt(1, rs.getInt("guide_id"));
+
+                        ResultSet guideResultSet = guideStatement.executeQuery();
+
+                        while (guideResultSet.next()) {
+                            guide = guideResultSet.getString("name");
+                        }
+
+                        guideResultSet.close();
+                        guideStatement.close();
                     }
-
-                    project_date += rs.getString("year");
-
+                    
                     Project project = new Project(
                             project_date,
                             rs.getString("title"),
-                            rs.getString("guide"),
+                            guide,
                             rs.getString("description"),
-                            rs.getString("report"),
-                            rs.getString("ppt"),
-                            rs.getString("code_directory")
+                            rs.getString("locked")
                     );
 
                     // Query for project members

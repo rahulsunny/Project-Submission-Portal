@@ -33,7 +33,7 @@ public class App {
     public static final String CONNECTION_USERNAME = "hr";
     public static final String CONNECTION_PASSWORD = "hr";
     public static final HashMap<String, ArrayList<Integer>> PROJECT_TITLE_DICT = new HashMap<>(1000);
-    public static final HashMap<String, ArrayList<Integer>> PROJECT_GUIDE_DICT = new HashMap<>(1000);
+    public static final HashMap<Integer, ArrayList<Integer>> PROJECT_GUIDE_DICT = new HashMap<>(1000);
     public static final HashMap<Integer, ArrayList<Integer>> PROJECT_KEYWORDS_DICT = new HashMap<>(1000);
     public static final LocalDate LOCK_DATE = LocalDate.of(2016, Month.MAY, 29);
     public static final int ROLL_NUM_MIN_LENGTH = 10;
@@ -44,12 +44,12 @@ public class App {
             Class.forName(DRIVER_CLASS);
             Connection con = DriverManager.getConnection(CONNECTION_STRING, CONNECTION_USERNAME, CONNECTION_PASSWORD);
             Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery("select id, title, guide from projects");
+            ResultSet rs = st.executeQuery("select id, title, guide_id from projects");
 
             while (rs.next()) {
                 String title = rs.getString("title");
                 int id = rs.getInt("id");
-                String guide = rs.getString("guide");
+                int guideId = rs.getInt("guide_id");
                 String[] words = title.split("[ ]");
 
                 for (String word : words) {
@@ -57,9 +57,7 @@ public class App {
                         word = word.toLowerCase();
                         
                         if (PROJECT_TITLE_DICT.containsKey(word)) {
-                            ArrayList<Integer> arr = PROJECT_TITLE_DICT.get(word);
-                            
-                            arr.add(id);
+                            PROJECT_TITLE_DICT.get(word).add(id);
                         } else {
                             ArrayList<Integer> arr = new ArrayList<>();
                             
@@ -69,15 +67,13 @@ public class App {
                     }
                 }
                 
-                if (PROJECT_GUIDE_DICT.containsKey(guide)) {
-                    ArrayList<Integer> arr = PROJECT_GUIDE_DICT.get(guide);
-                    
-                    arr.add(id);
+                if (PROJECT_GUIDE_DICT.containsKey(guideId)) {
+                    PROJECT_GUIDE_DICT.get(guideId).add(id);
                 } else {
                     ArrayList<Integer> arr = new ArrayList<>();
                     
                     arr.add(id);
-                    PROJECT_GUIDE_DICT.put(guide, arr);
+                    PROJECT_GUIDE_DICT.put(guideId, arr);
                 }
             }
 
@@ -93,9 +89,7 @@ public class App {
                 
                 // mapping from keyword to project
                 if (PROJECT_KEYWORDS_DICT.containsKey(keywordId)) {
-                    ArrayList<Integer> arr = PROJECT_KEYWORDS_DICT.get(keywordId);
-                    
-                    arr.add(projectId);
+                    PROJECT_KEYWORDS_DICT.get(keywordId).add(projectId);
                 } else {
                     ArrayList<Integer> arr = new ArrayList<>();
                     

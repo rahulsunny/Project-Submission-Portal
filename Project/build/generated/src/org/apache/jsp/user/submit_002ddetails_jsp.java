@@ -56,7 +56,7 @@ public final class submit_002ddetails_jsp extends org.apache.jasper.runtime.Http
       out.write("        <!--Let browser know website is optimized for mobile-->\n");
       out.write("        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n");
       out.write("    </head>\n");
-      out.write("    <body class=\"\">\n");
+      out.write("    <body>\n");
       out.write("        <!-- SideNav -->\n");
       out.write("        <ul id=\"slide-out\" class=\"side-nav\">\n");
       out.write("            <li>\n");
@@ -101,7 +101,7 @@ public final class submit_002ddetails_jsp extends org.apache.jasper.runtime.Http
       out.print( s.getAttribute("name"));
       out.write(" ! &nbsp; </li>\n");
       out.write("                        <li><a href=\"#\" data-activates=\"slide-out\" class=\"navbar-button waves-effect\"><i class=\"material-icons\">view_module</i></a></li>\n");
-      out.write("                        <li><a class=\"waves-effect\" href=\"#!\">Logout</a></li>\n");
+      out.write("                        <li><a class=\"waves-effect\" href=\"/Project/UserLogout\">Logout</a></li>\n");
       out.write("                    </ul>\n");
       out.write("                </div>\n");
       out.write("            </div>\n");
@@ -133,7 +133,7 @@ public final class submit_002ddetails_jsp extends org.apache.jasper.runtime.Http
       out.write("                                <li>Project details are to be filled after you have have decided the project and after thorough verification with your team members\n");
       out.write("                                    as the details cannot be edited later.</li>\n");
       out.write("                                <li>Please keep the project title short yet which describes your project in the best way possible.</li>\n");
-      out.write("                                <li>Project keyword is the domain on which your project belongs to. Please choose a <b>maximum</b> of 3 domains only.</li>\n");
+      out.write("                                <li>Project keyword is the domain on which your project belongs to. Please choose a <b>maximum</b> of 3 keywords only.</li>\n");
       out.write("                                <li>In the unlikely case of a rejection of your project after evaluation, please contact the admin immediately.</li>\n");
       out.write("                            </ul>\n");
       out.write("                        </div>\n");
@@ -172,28 +172,37 @@ public final class submit_002ddetails_jsp extends org.apache.jasper.runtime.Http
       out.write("                                <div class=\"row\">\n");
       out.write("                                    <div class=\"input-field col s12\">\n");
       out.write("                                        <select id=\"guide\" name=\"guide\" required=\"required\">\n");
-      out.write("                                            <option value=\"\" disabled selected>Choose your guide</option>\n");
+      out.write("                                            <option disabled selected>Choose your guide</option>\n");
       out.write("                                            ");
-                                                try {
-                                                    BufferedReader br = new BufferedReader(new FileReader(application.getRealPath("/") + "\\project-guides.txt"));
-                                                    String line;
 
-                                                    while ((line = br.readLine()) != null) {
+                                                // generate guide options
+                                                try {
+                                                    Class.forName(App.DRIVER_CLASS);
+                                                    Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
+                                                    Statement st = con.createStatement();
+                                                    ResultSet rs = st.executeQuery("select id, name from guides where available = 'Y' order by name");
+
+                                                    while (rs.next()) {
+                                                        int guideId = rs.getInt("id");
+                                                        String name = rs.getString("name");
+
                                             
       out.write("\n");
       out.write("                                            <option value=\"");
-      out.print( line);
+      out.print( guideId);
       out.write('"');
       out.write('>');
-      out.print( line);
+      out.print( name);
       out.write("</option>\n");
       out.write("                                            ");
 
                                                     }
 
-                                                    br.close();
+                                                    rs.close();
+                                                    st.close();
+                                                    con.close();
                                                 } catch (Exception ex) {
-                                                    System.out.println("Exception in submit-details.jsp - " + ex.getLocalizedMessage());
+                                                    // Log details
                                                 }
                                             
       out.write("\n");
@@ -235,18 +244,46 @@ public final class submit_002ddetails_jsp extends org.apache.jasper.runtime.Http
       out.write("                                    </div>\n");
       out.write("                                </div>\n");
       out.write("                                <p>\n");
-      out.write("                                    <b>Note</b> - None of the above fields can be altered after submission. Please verify every field thoroughly before submission.\n");
-      out.write("                                </p>\n");
-      out.write("                                <br>\n");
-      out.write("                                <p>\n");
-      out.write("                                    <input name=\"verify\" id=\"verify\" type=\"checkbox\" />\n");
-      out.write("                                    <label for=\"verify\">I have verified all the above fields to be true to the best of my knowledge.</label>\n");
+      out.write("                                    <b>Note</b> - Please enter your team members' enrollment numbers correctly in upper case (example, IIT2013001). If your team has less than 5 members leave the\n");
+      out.write("                                    last fields empty. An empty field in between non-empty entries will lead to improper team formation. Please enter the information carefully.\n");
       out.write("                                </p>\n");
       out.write("                                <br>\n");
       out.write("                                <div class=\"row\">\n");
+      out.write("                                    <div class=\"input-field col s6\">\n");
+      out.write("                                        <input placeholder=\"Member Enrollment Number (In upper case)\" id=\"member1\" name=\"member1\" type=\"text\" class=\"validate\" required=\"required\" value=\"");
+      out.print( s.getAttribute("rollNum"));
+      out.write("\" >\n");
+      out.write("                                        <label for=\"member1\">Team Member 1</label>\n");
+      out.write("                                    </div>\n");
+      out.write("                                </div>\n");
+      out.write("                                <div class=\"row\">\n");
+      out.write("                                    <div class=\"input-field col s6\">\n");
+      out.write("                                        <input placeholder=\"Member Enrollment Number (In upper case)\" id=\"member2\" name=\"member2\" type=\"text\" class=\"validate\">\n");
+      out.write("                                        <label for=\"member2\">Team Member 2</label>\n");
+      out.write("                                    </div>\n");
+      out.write("                                </div>\n");
+      out.write("                                <div class=\"row\">\n");
+      out.write("                                    <div class=\"input-field col s6\">\n");
+      out.write("                                        <input placeholder=\"Member Enrollment Number (In upper case)\" id=\"member3\" name=\"member3\" type=\"text\" class=\"validate\">\n");
+      out.write("                                        <label for=\"member3\">Team Member 3</label>\n");
+      out.write("                                    </div>\n");
+      out.write("                                </div>\n");
+      out.write("                                <div class=\"row\">\n");
+      out.write("                                    <div class=\"input-field col s6\">\n");
+      out.write("                                        <input placeholder=\"Member Enrollment Number (In upper case)\" id=\"member4\" name=\"member4\" type=\"text\" class=\"validate\">\n");
+      out.write("                                        <label for=\"member4\">Team Member 4</label>\n");
+      out.write("                                    </div>\n");
+      out.write("                                </div>\n");
+      out.write("                                <div class=\"row\">\n");
+      out.write("                                    <div class=\"input-field col s6\">\n");
+      out.write("                                        <input placeholder=\"Member Enrollment Number (In upper case)\" id=\"member5\" name=\"member5\" type=\"text\" class=\"validate\">\n");
+      out.write("                                        <label for=\"member5\">Team Member 5</label>\n");
+      out.write("                                    </div>\n");
+      out.write("                                </div>\n");
+      out.write("                                <div class=\"row\">\n");
       out.write("                                    <div class=\"input-field col m6\">\n");
       out.write("                                        <input id=\"password\" name=\"password\" type=\"password\" class=\"validate\"/>\n");
-      out.write("                                        <label for=\"password\">Re-enter password</label>\n");
+      out.write("                                        <label for=\"password\">Re-enter your password</label>\n");
       out.write("                                    </div>\n");
       out.write("                                </div>\n");
       out.write("                                <button type=\"submit\" class=\"waves-effect waves-light btn\">Submit</button>\n");

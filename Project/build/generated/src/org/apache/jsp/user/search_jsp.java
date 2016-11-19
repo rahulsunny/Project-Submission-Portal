@@ -48,7 +48,7 @@ public final class search_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("<!DOCTYPE html>\n");
       out.write("<html>\n");
       out.write("    <head>\n");
-      out.write("        <title>Search Projects | Project Sumbission Portal | IIITA</title>\n");
+      out.write("        <title>Search Projects | Project Submission Portal | IIITA</title>\n");
       out.write("        <!--Import Google Icon Font-->\n");
       out.write("        <link href=\"../fonts/iconfont/material-icons.css\" rel=\"stylesheet\"/>\n");
       out.write("        <!--Import materialize.css-->\n");
@@ -56,7 +56,7 @@ public final class search_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("        <!--Let browser know website is optimized for mobile-->\n");
       out.write("        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"/>\n");
       out.write("    </head>\n");
-      out.write("    <body class=\"\">\n");
+      out.write("    <body>\n");
       out.write("        <!-- SideNav -->\n");
       out.write("        <ul id=\"slide-out\" class=\"side-nav\">\n");
       out.write("            <li>\n");
@@ -68,7 +68,7 @@ public final class search_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                <a class=\"subheader\">Submit</a>\n");
       out.write("            </li>\n");
       out.write("            <li>\n");
-      out.write("                <a href=\"submit-report.jsp\" class=\"waves-effect\">Submit Project Details</a>\n");
+      out.write("                <a href=\"submit-details.jsp\" class=\"waves-effect\">Submit Project Details</a>\n");
       out.write("            </li>\n");
       out.write("            <li>\n");
       out.write("                <a href=\"submit-report.jsp\" class=\"waves-effect\">Submit Project Report</a>\n");
@@ -177,47 +177,47 @@ public final class search_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("                                        <label>Select Project Keywords</label>\n");
       out.write("                                    </div>\n");
       out.write("                                </div>\n");
-      out.write("<!--                                                                <div class=\"row\">\n");
-      out.write("                                                                    <div class=\"input-field col s12\">\n");
-      out.write("                                                                        <select name=\"keywords\" name=\"keywords\" multiple>\n");
-      out.write("                                                                            <option value=\"\" disabled selected>Choose your option</option>\n");
-      out.write("                                ");
+      out.write("                                <div class=\"row\">\n");
+      out.write("                                    <div class=\"input-field col s12\">\n");
+      out.write("                                        <select name=\"guide\" multiple>\n");
+      out.write("                                            <option disabled selected>Choose your option</option>\n");
+      out.write("                                            ");
 
-                                    try {
-                                        Class.forName(App.DRIVER_CLASS);
-                                        Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
-                                        Statement keywordsStatement = con.createStatement();
-                                        String keywordsQuery = "select * from keywords order by keyword";
-                                        ResultSet keywordsResultSet = keywordsStatement.executeQuery(keywordsQuery);
+                                                try {
+                                                    Class.forName(App.DRIVER_CLASS);
+                                                    Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
+                                                    Statement guideStatement = con.createStatement();
+                                                    String guideQuery = "select id, name from guides order by name";
+                                                    ResultSet guideResultSet = guideStatement.executeQuery(guideQuery);
 
-                                        while (keywordsResultSet.next()) {
-                                
+                                                    while (guideResultSet.next()) {
+                                            
       out.write("\n");
-      out.write("                                <option value=\"");
-      out.print( keywordsResultSet.getString("id"));
+      out.write("                                            <option value=\"");
+      out.print( guideResultSet.getInt("id"));
       out.write("\"> &nbsp; ");
-      out.print( keywordsResultSet.getString("keyword"));
+      out.print( guideResultSet.getString("name"));
       out.write("</option>\n");
-      out.write("                                ");
+      out.write("                                            ");
 
-                                    }
+                                                }
 
-                                } catch (Exception ex) {
-                                
+                                            } catch (Exception ex) {
+                                            
       out.write("\n");
-      out.write("                            </select>\n");
-      out.write("                            <h3>");
+      out.write("                                        </select>\n");
+      out.write("                                        <h3>");
       out.print( ex.getMessage());
       out.write("</h3>\n");
-      out.write("                                ");
+      out.write("                                        ");
 
-                                    }
-                                
+                                            }
+                                        
       out.write("\n");
-      out.write("                                </select>\n");
-      out.write("                                <label>Select Guide</label>\n");
-      out.write("                            </div>\n");
-      out.write("                        </div>-->\n");
+      out.write("                                        </select>\n");
+      out.write("                                        <label>Select Guide</label>\n");
+      out.write("                                    </div>\n");
+      out.write("                                </div>\n");
       out.write("                                <button type=\"button\" class=\"waves-effect waves-light btn\" onclick=\"searchProjects()\">Search</button>\n");
       out.write("                            </form>\n");
       out.write("                        </div>\n");
@@ -283,7 +283,7 @@ public final class search_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("\n");
       out.write("                                    function searchProjectsCallback(data) {\n");
       out.write("                                        $('#results').empty();\n");
-      out.write("                                        \n");
+      out.write("\n");
       out.write("                                        if (data.fail === \"No projects found.\") {\n");
       out.write("                                            var html = '<div class=\"card grey lighten-5\">' +\n");
       out.write("                                                    '<div class=\"card-content\">' +\n");
