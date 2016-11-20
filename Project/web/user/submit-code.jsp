@@ -39,13 +39,6 @@
             <li>
                 <a href="#" class="waves-effect">Submit Project Code</a>
             </li>
-            <li><div class="divider"></div></li>
-            <li>
-                <a class="subheader">Evaluation</a>
-            </li>
-            <li>
-                <a href="#" class="waves-effect">Present Project PPT</a>
-            </li>
         </ul>
         <%
             HttpSession s = request.getSession();

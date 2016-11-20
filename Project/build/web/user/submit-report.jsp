@@ -33,13 +33,6 @@
             <li>
                 <a href="submit-code.jsp" class="waves-effect">Submit Project Code</a>
             </li>
-            <li><div class="divider"></div></li>
-            <li>
-                <a class="subheader">Evaluation</a>
-            </li>
-            <li>
-                <a href="#" class="waves-effect">Present Project PPT</a>
-            </li>
         </ul>
         <%
             HttpSession s = request.getSession();
@@ -112,24 +105,19 @@
                                 <div class="file-field input-field">
                                     <div class="btn">
                                         <span>File</span>
-                                        <input type="file" name="file" required="required">
+                                        <input type="file" name="file" required="required"  accept="pdf, application/pdf">
                                     </div>
                                     <div class="file-path-wrapper">
                                         <input class="file-path validate" type="text">
                                     </div>
                                 </div>
-                                <p>
-                                    <b>Note</b> - None of the above fields can be altered after submission. Please verify every field thoroughly before submission.
-                                </p>
                                 <br>
                                 <p>
-                                    <input type="checkbox" id="verify" />
-                                    <label for="verify">I have verified all the above fields to be true to the best of my knowledge.</label>
+                                    <b>Note</b> - Project report cannot be altered after submission. Please verify very thoroughly before submission.
                                 </p>
-                                <br>
                                 <div class="row">
                                     <div class="input-field col m6">
-                                        <input id="password" type="password" class="validate"/>
+                                        <input id="password" name="password" type="password" class="validate"/>
                                         <label for="password">Re-enter password</label>
                                     </div>
                                 </div>

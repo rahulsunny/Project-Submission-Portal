@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" import="java.io.*, java.sql.*, classes.App"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="java.io.*, java.sql.*, classes.App, java.time.format.* "%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -32,13 +32,6 @@
             </li>
             <li>
                 <a href="submit-code.jsp" class="waves-effect">Submit Project Code</a>
-            </li>
-            <li><div class="divider"></div></li>
-            <li>
-                <a class="subheader">Evaluation</a>
-            </li>
-            <li>
-                <a href="#" class="waves-effect">Present Project PPT</a>
             </li>
         </ul>
         <%
@@ -92,16 +85,97 @@
             </div>
             <div class="row">
                 <div class="col l12">
+                    <%
+                        if (s.getAttribute("id") != null) {
+
+                    %>
+                    <div class="card">
+                        <div class="card-content">
+                            <p>You have already submitted your project details. You can view the details below.</p>
+                        </div>
+                    </div>
+                    <%                                try {
+                            Class.forName(App.DRIVER_CLASS);
+                            Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
+                            Statement projectStatement = con.createStatement();
+
+                            String query = "select projects.id, title, description, name, project_date"
+                                    + " from projects join guides on projects.guide_id = guides.id"
+                                    + " where projects.id = " + s.getAttribute("id").toString();
+
+                            ResultSet rs = projectStatement.executeQuery(query);
+
+                            while (rs.next()) {
+                                String project_date = rs.getDate("project_date").toLocalDate().format(DateTimeFormatter.ofPattern("MMMM dd, uuuu"));
+                    %>
+                    <div class="card grey lighten-5">
+                        <div class="card-content">
+                            <span class="card-title"><%= rs.getString("title")%></span><br>
+                            <small><%= project_date%></small><br><br>
+                            <p><%= rs.getString("description")%></p>
+                            <br>
+                            <p>Project Group Members -</p>
+                            <ul>
+                                <%
+                                    {
+                                        Statement membersStatement = con.createStatement();
+                                        String membersQuery = "select students.roll_num, name from students "
+                                                + "join project_members on students.ROLL_NUM = project_members.ROLL_NUM "
+                                                + "where project_members.PROJECT_ID = " + rs.getString("id");
+
+                                        ResultSet membersResultSet = membersStatement.executeQuery(membersQuery);
+
+                                        while (membersResultSet.next()) {
+                                %>
+                                <li><%= membersResultSet.getString("name")%> (<%= membersResultSet.getString("roll_num")%>)</li>
+                                    <%
+                                            }
+
+                                            membersResultSet.close();
+                                            membersStatement.close();
+                                        }
+                                    %>
+                            </ul>
+                            <p>Project Guide - <%= rs.getString("name")%></p><br>
+                            <%
+                                {
+                                    Statement keywordsStatement = con.createStatement();
+                                    String keywordsQuery = "select keyword from keywords "
+                                            + "join project_keywords on project_keywords.keyword_id = keywords.id "
+                                            + "where project_keywords.project_id = " + rs.getString("id");
+                                    ResultSet keywordsResultSet = keywordsStatement.executeQuery(keywordsQuery);
+
+                                    while (keywordsResultSet.next()) {
+                            %>
+                            <a href="#"><div class="chip"><%= keywordsResultSet.getString("keyword")%></div></a>
+                                <%
+                                        }
+
+                                        keywordsResultSet.close();
+                                        keywordsStatement.close();
+                                    }
+                                %>
+                        </div>
+                        <div class="card-action">
+                            <a href="#" class="waves-effect waves-d btn white black-text">Download Project Report</a>
+                            <a href="#" class="waves-effect waves-d btn white black-text">Download PPT</a>
+                            <a href="#" class="waves-effect waves-d btn white black-text">Download Code</a>
+                        </div>
+                    </div>
+                    <%
+                        }
+
+                        con.close();
+                    } catch (Exception ex) {
+                    %>
+                    <p><%= ex.getMessage()%></p>
+                    <%
+                        }
+                    } else {
+                    %>
                     <div class="card">
                         <div class="card-content">
                             <span class="card-title">Submit Project Details</span>
-                            <%
-                                if (s.getAttribute("id") != null) {
-                            %>
-                            <p>You have already submitted the details for your project.</p>
-                            <%
-                            } else {
-                            %>
                             <form method="post" action="/Project/AddProject">
                                 <div class="row">
                                     <div class="input-field col s6">
@@ -132,7 +206,7 @@
                                                         String name = rs.getString("name");
 
                                             %>
-                                            <option value="<%= guideId %>"><%= name%></option>
+                                            <option value="<%= guideId%>"><%= name%></option>
                                             <%
                                                     }
 

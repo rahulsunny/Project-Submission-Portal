@@ -2,6 +2,15 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/C:/Users/Sarada/Documents/NetBeansProjects/Project-Submission-Portal/Project/web/user/index.jsp</file>
+            <file>file:/C:/Users/Sarada/Documents/NetBeansProjects/Project-Submission-Portal/Project/src/java/servlets/UploadPPT.java</file>
+            <file>file:/C:/Users/Sarada/Documents/NetBeansProjects/Project-Submission-Portal/Project/web/user/submit-report.jsp</file>
+            <file>file:/C:/Users/Sarada/Documents/NetBeansProjects/Project-Submission-Portal/Project/src/java/servlets/UploadReport.java</file>
+            <file>file:/C:/Users/Sarada/Documents/NetBeansProjects/Project-Submission-Portal/Project/web/user/submit-ppt.jsp</file>
+            <file>file:/C:/Users/Sarada/Documents/NetBeansProjects/Project-Submission-Portal/Project/web/user/submit-code.jsp</file>
+            <file>file:/C:/Users/Sarada/Documents/NetBeansProjects/Project-Submission-Portal/Project/web/user/search.jsp</file>
+            <file>file:/C:/Users/Sarada/Documents/NetBeansProjects/Project-Submission-Portal/Project/web/user/submit-details.jsp</file>
+        </group>
     </open-files>
 </project-private>

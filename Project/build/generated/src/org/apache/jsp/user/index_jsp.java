@@ -5,6 +5,8 @@ import javax.servlet.http.*;
 import javax.servlet.jsp.*;
 import classes.App;
 import java.sql.*;
+import java.time.*;
+import java.time.format.*;
 
 public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
     implements org.apache.jasper.runtime.JspSourceDependent {
@@ -79,13 +81,6 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            <li>\n");
       out.write("                <a href=\"submit-code.jsp\" class=\"waves-effect\">Submit Project Code</a>\n");
       out.write("            </li>\n");
-      out.write("            <li><div class=\"divider\"></div></li>\n");
-      out.write("            <li>\n");
-      out.write("                <a class=\"subheader\">Evaluation</a>\n");
-      out.write("            </li>\n");
-      out.write("            <li>\n");
-      out.write("                <a href=\"#\" class=\"waves-effect\">Present Project PPT</a>\n");
-      out.write("            </li>\n");
       out.write("        </ul>\n");
       out.write("        ");
 
@@ -131,13 +126,17 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
                             ResultSet rs = projectStatement.executeQuery(query);
 
                             while (rs.next()) {
+                                String project_date = rs.getDate("project_date").toLocalDate().format(DateTimeFormatter.ofPattern("MMMM dd, uuuu"));
                     
       out.write("\n");
       out.write("                    <div class=\"card grey lighten-5\">\n");
       out.write("                        <div class=\"card-content\">\n");
       out.write("                            <span class=\"card-title\">");
       out.print( rs.getString("title"));
-      out.write("</span>\n");
+      out.write("</span><br>\n");
+      out.write("                            <small>");
+      out.print( project_date );
+      out.write("</small><br><br>\n");
       out.write("                            <p>");
       out.print( rs.getString("description"));
       out.write("</p>\n");
@@ -150,7 +149,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
                                         Statement membersStatement = con.createStatement();
                                         String membersQuery = "select students.roll_num, name from students "
                                                 + "join project_members on students.ROLL_NUM = project_members.ROLL_NUM "
-                                                + "where project_members.PROJECT_ID = " + rs.getString("projects.id");
+                                                + "where project_members.PROJECT_ID = " + rs.getString("id");
 
                                         ResultSet membersResultSet = membersStatement.executeQuery(membersQuery);
 
@@ -182,7 +181,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
                                     Statement keywordsStatement = con.createStatement();
                                     String keywordsQuery = "select keyword from keywords "
                                             + "join project_keywords on project_keywords.keyword_id = keywords.id "
-                                            + "where project_keywords.project_id = " + rs.getString("project.id");
+                                            + "where project_keywords.project_id = " + rs.getString("id");
                                     ResultSet keywordsResultSet = keywordsStatement.executeQuery(keywordsQuery);
 
                                     while (keywordsResultSet.next()) {
@@ -213,7 +212,13 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
 
                         con.close();
                     } catch (Exception ex) {
-                        // log error
+                        
+      out.write("\n");
+      out.write("                        <p>");
+      out.print( ex.getMessage() );
+      out.write("</p>\n");
+      out.write("                        ");
+
                     }
                     
       out.write("\n");

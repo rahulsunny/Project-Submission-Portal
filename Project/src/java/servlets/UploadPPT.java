@@ -6,12 +6,9 @@
 package servlets;
 
 import classes.App;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -44,7 +41,7 @@ public class UploadPPT extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UploadPPT</title>");            
+            out.println("<title>Servlet UploadPPT</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet UploadPPT at " + request.getContextPath() + "</h1>");
@@ -86,44 +83,35 @@ public class UploadPPT extends HttpServlet {
             // no project at all
             pw.println("Please create a project for the current semester.");
             return;
+        } else if (s.getAttribute("password") == null) {
+            pw.println("Please login first.");
+            return;
         }
         
-        try {
-            Class.forName(App.DRIVER_CLASS);
-            Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
+        String password = request.getParameter("password");
+        
+        if (password == null || !password.equals(s.getAttribute("password").toString())) {
+            pw.println("Password mismatch! You have been logged out for security reasons.");
+            s.invalidate();
+            return;
+        }
+        
+        String location = getServletContext().getRealPath("/") + "\\data\\ppts\\" + s.getAttribute("id") + ".pdf";
+        File report = new File(location);
+        
+        if (report.exists()) {
+            pw.println("You have already submitted the ppt.");
+            return;
+        }
+        
+        String path = getServletContext().getRealPath("/") + "\\data\\ppts";
+        Part filePart = request.getPart("file");
+        String fileName = s.getAttribute("id") + ".pdf";
 
-            // check if a report is already present
-            String query = "select ppt from projects where id = ?";
-            PreparedStatement pst = con.prepareStatement(query);
-
-            pst.setInt(1, Integer.parseInt(s.getAttribute("id").toString()));
-
-            ResultSet rs = pst.executeQuery();
-
-            if (rs.next()) {
-                String report = rs.getString("ppt");
-
-                if (report == null) {
-                    String path = getServletContext().getRealPath("/") + "\\data\\ppts";
-                    Part filePart = request.getPart("file");
-                    String fileName = s.getAttribute("id") + ".pdf";
-                    
-                    if (App.uploadFile(path, filePart, fileName)) {
-                        pw.println("File upload successfull. Please go back and refresh the page.");
-                    } else {
-                        pw.println("And error has occurred. Please try again after sometime.");
-                    }
-                } else {
-                    // a report is already present
-                    pw.println("Your project already has a ppt submitted.");
-                }
-            } else {
-                // this case will never occur. But just to be safe
-                pw.println("Please create a project for the current semester.");
-            }
-        } catch (Exception ex) {
-            pw.println("Exception - " + ex.getMessage());
-            ex.printStackTrace();
+        if (App.uploadFile(path, filePart, fileName)) {
+            pw.println("File upload successfull. Please go back and refresh the page.");
+        } else {
+            pw.println("And error has occurred. Please try again after sometime.");
         }
     }
 
