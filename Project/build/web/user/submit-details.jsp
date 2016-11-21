@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" import="java.io.*, java.sql.*, classes.App, java.time.format.* "%>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="java.io.*, java.sql.*, classes.App, java.time.format.*"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -49,9 +49,7 @@
                 </div>
             </div>
         </nav>
-
         <br><br>
-
         <div class="container">
             <div class="row">
                 <div class="col l12">
@@ -82,32 +80,28 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col l12">
                     <%
                         if (s.getAttribute("id") != null) {
+                            try {
+                                Class.forName(App.DRIVER_CLASS);
+                                Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
+                                Statement projectStatement = con.createStatement();
 
+                                String query = "select projects.id, title, description, name, project_date"
+                                        + " from projects join guides on projects.guide_id = guides.id"
+                                        + " where projects.id = " + s.getAttribute("id").toString();
+
+                                ResultSet rs = projectStatement.executeQuery(query);
+
+                                if (rs.next()) {
+                                    String project_date = rs.getDate("project_date").toLocalDate().format(DateTimeFormatter.ofPattern("MMMM dd, uuuu"));
                     %>
                     <div class="card">
                         <div class="card-content">
                             <p>You have already submitted your project details. You can view the details below.</p>
                         </div>
                     </div>
-                    <%                                try {
-                            Class.forName(App.DRIVER_CLASS);
-                            Connection con = DriverManager.getConnection(App.CONNECTION_STRING, App.CONNECTION_USERNAME, App.CONNECTION_PASSWORD);
-                            Statement projectStatement = con.createStatement();
-
-                            String query = "select projects.id, title, description, name, project_date"
-                                    + " from projects join guides on projects.guide_id = guides.id"
-                                    + " where projects.id = " + s.getAttribute("id").toString();
-
-                            ResultSet rs = projectStatement.executeQuery(query);
-
-                            while (rs.next()) {
-                                String project_date = rs.getDate("project_date").toLocalDate().format(DateTimeFormatter.ofPattern("MMMM dd, uuuu"));
-                    %>
                     <div class="card grey lighten-5">
                         <div class="card-content">
                             <span class="card-title"><%= rs.getString("title")%></span><br>
@@ -160,6 +154,18 @@
                             <a href="#" class="waves-effect waves-d btn white black-text">Download Project Report</a>
                             <a href="#" class="waves-effect waves-d btn white black-text">Download PPT</a>
                             <a href="#" class="waves-effect waves-d btn white black-text">Download Code</a>
+                        </div>
+                    </div>
+                    <%
+                    } else {
+                        s.removeAttribute("id");
+                    %>
+                    <div class="card">
+                        <div class="card-content">
+                            <p>
+                                Uh oh! Your project seems to be deleted by the administrator! Please contact the portal administrator if you feel this
+                                is inappropriate. Refresh the page to create a new project.
+                            </p>
                         </div>
                     </div>
                     <%

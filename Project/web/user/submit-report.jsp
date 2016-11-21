@@ -49,9 +49,7 @@
                 </div>
             </div>
         </nav>
-
         <br><br>
-
         <div class="container">
             <div class="row">
                 <div class="col l12">
@@ -80,17 +78,17 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col l12">
                     <div class="card">
                         <div class="card-content">
                             <%
-                                String location = application.getRealPath("/") + "\\data\\reports\\" + s.getAttribute("id") + ".pdf";
-                                File report = new File(location);
 
-                                if (report.exists()) {
-                                    String fileRelativeLocation = "../data/reports/" + s.getAttribute("id") + ".pdf";
+                                if (s.getAttribute("id") != null) {
+                                    String location = application.getRealPath("/") + "\\data\\reports\\" + s.getAttribute("id") + ".pdf";
+                                    File report = new File(location);
+
+                                    if (report.exists()) {
+                                        String fileRelativeLocation = "../data/reports/" + s.getAttribute("id") + ".pdf";
                             %>
                             <span class="card-title">Submit Project Report</span>
                             <p>You have already submitted a project report. You can view it below -</p><br>
@@ -124,6 +122,11 @@
                                 <button type="submit" class="waves-effect waves-light btn">Submit</button>
                             </form>
                             <%
+                                    }
+                                } else {
+                                    %>
+                                    <p>Please create a project for the current semester first.</p>
+                                    <%
                                 }
                             %>
                         </div>

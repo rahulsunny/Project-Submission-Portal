@@ -49,9 +49,7 @@
                 </div>
             </div>
         </nav>
-
         <br><br>
-
         <div class="container">
             <div class="row">
                 <div class="col l12">
@@ -59,7 +57,6 @@
                     <a href="/Project/user/" class="waves-effect waves-light btn green">Back to Dashboard</a>
                 </div>
             </div>
-
         </div>
         <div class="container">
             <div class="row">
@@ -76,29 +73,29 @@
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="row">
                 <div class="col l12">
                     <div class="card">
                         <div class="card-content">
-                            <span class="card-title">Submit Project Presentation</span>
                             <%
-                                String location = application.getRealPath("/") + "\\data\\ppts\\" + s.getAttribute("id") + ".pdf";
-                                File ppt = new File(location);
 
-                                if (ppt.exists()) {
-                                    String fileRelativeLocation = "../data/ppts/" + s.getAttribute("id") + ".pdf";
+                                if (s.getAttribute("id") != null) {
+                                    String location = application.getRealPath("/") + "\\data\\ppts\\" + s.getAttribute("id") + ".pdf";
+                                    File ppt = new File(location);
+
+                                    if (ppt.exists()) {
+                                        String fileRelativeLocation = "../data/ppts/" + s.getAttribute("id") + ".pdf";
                             %>
                             <p>
                                 You have already submitted a presentation for your project. You can view it below.
                             </p>
                             <br>
-                            <object data="<%= fileRelativeLocation %>" type="application/pdf" width="100%" height="650px">
+                            <object data="<%= fileRelativeLocation%>" type="application/pdf" width="100%" height="650px">
                                 <p>Project Presentation</p>
                             </object>
                             <%
                             } else {
                             %>
+                            <span class="card-title">Submit Project Presentation</span>
                             <form action="/Project/UploadPPT" method="post" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col m6">
@@ -126,6 +123,11 @@
                                 <button type="submit" class="waves-effect waves-light btn">Submit</button>
                             </form>
                             <%
+                                    }
+                                } else {
+                                    %>
+                                    <p>Please create a project for the current semester first.</p>
+                                    <%
                                 }
                             %>
                         </div>

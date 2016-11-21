@@ -70,7 +70,7 @@ create table projects
 (
 	id number(*, 0) constraint PROJECTS_ID_PK primary key,
 	project_date date constraint PROJECTS_DATE_NN not null,
-	title varchar2(100) constraint PROJECTS_TITLE_NN not null,
+	title varchar2(100) constraint PROJECTS_TITLE_NN unique,
 	guide_id number(*, 0),
 	description varchar2(1000) constraint PROJECTS_DESC_NN not null,
 	locked varchar2(1) constraint PROJECTS_LOCKED_CHECK check(locked = 'Y' or locked = 'N'),

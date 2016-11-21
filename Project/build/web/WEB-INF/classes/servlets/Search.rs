@@ -1,2 +1,0 @@
-servlets.Search
-servlets.MaxHeapNode

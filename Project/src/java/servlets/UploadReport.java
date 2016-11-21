@@ -6,9 +6,17 @@
 package servlets;
 
 import classes.App;
+import static classes.App.CONNECTION_PASSWORD;
+import static classes.App.CONNECTION_STRING;
+import static classes.App.CONNECTION_USERNAME;
+import static classes.App.DRIVER_CLASS;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -101,6 +109,26 @@ public class UploadReport extends HttpServlet {
 
         if (report.exists()) {
             pw.println("You have already submitted the report.");
+            return;
+        }
+        
+        // occurs when project is deleted
+        try {
+            Class.forName(DRIVER_CLASS);
+            Connection con = DriverManager.getConnection(CONNECTION_STRING, CONNECTION_USERNAME, CONNECTION_PASSWORD);
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("select locked from projects where id = " + s.getAttribute("id"));
+            
+            if (rs.next()) {
+                // lock check
+            } else {
+                s.removeAttribute("id");
+                pw.println("Your project seems to be deleted. Please contact the administrator if this is inappropriate. Please go back and refresh.");
+                return;
+            }
+        } catch (Exception ex) {
+            System.out.println("Error in UploadReport.java - " + ex.getMessage());
+            pw.println("And error occured. Please go back and try again.");
             return;
         }
 

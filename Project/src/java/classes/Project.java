@@ -12,7 +12,7 @@ package classes;
 import java.util.ArrayList;
 
 public class Project {
-
+    public int id = -1;
     public String project_date;
     public String title;
     public String guide;

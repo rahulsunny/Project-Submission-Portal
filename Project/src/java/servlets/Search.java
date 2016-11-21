@@ -23,6 +23,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -85,6 +86,7 @@ public class Search extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/json");
+        HttpSession s = request.getSession();
         PrintWriter pw = response.getWriter();
         String title = request.getParameter("title");
         String[] keywords = request.getParameterValues("keywords[]");
@@ -237,6 +239,11 @@ public class Search extends HttpServlet {
 
                         keywordsResultSet.close();
                         keywordsStatement.close();
+                    }
+                    
+                    // adding project id if it is the admin
+                    if (s.getAttribute("admin") != null) {
+                        project.id = id;
                     }
 
                     results.add(project);
