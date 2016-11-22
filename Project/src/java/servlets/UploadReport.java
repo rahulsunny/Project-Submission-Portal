@@ -135,7 +135,13 @@ public class UploadReport extends HttpServlet {
         String path = getServletContext().getRealPath("/") + "\\data\\reports";
         Part filePart = request.getPart("file");
         String fileName = s.getAttribute("id") + ".pdf";
-
+        String uploadedFileName = App.getFileName(filePart);
+        
+        if (!uploadedFileName.endsWith(".pdf")) {
+            pw.println("Please upload a .pdf file only.");
+            return;
+        }
+        
         if (App.uploadFile(path, filePart, fileName)) {
             pw.println("File upload successfull. Please go back and refresh the page.");
         } else {

@@ -29,8 +29,8 @@ import javax.servlet.http.Part;
  *
  * @author Vamsi
  */
-@WebServlet(name = "UploadPPT", urlPatterns = {"/UploadPPT"})
-public class UploadPPT extends HttpServlet {
+@WebServlet(name = "UploadCode", urlPatterns = {"/UploadCode"})
+public class UploadCode extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -49,10 +49,10 @@ public class UploadPPT extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UploadPPT</title>");
+            out.println("<title>Servlet UploadCode</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UploadPPT at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UploadCode at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -82,11 +82,12 @@ public class UploadPPT extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
         response.setContentType("text/plain");
         PrintWriter pw = response.getWriter();
         HttpSession s = request.getSession();
-
+        
         if (s.getAttribute("id") == null) {
             // no project at all
             pw.println("Please create a project for the current semester.");
@@ -99,11 +100,12 @@ public class UploadPPT extends HttpServlet {
         String password = request.getParameter("password");
         
         if (password == null || !password.equals(s.getAttribute("password").toString())) {
+            System.out.println("Password mismatch! You have been logged out for security reasons.");
             pw.println("Password mismatch! You have been logged out for security reasons.");
             s.invalidate();
             return;
         }
-        
+
         // occurs when project is deleted
         try {
             Class.forName(DRIVER_CLASS);
@@ -118,31 +120,30 @@ public class UploadPPT extends HttpServlet {
                 pw.println("Your project seems to be deleted. Please contact the administrator if this is inappropriate. Please go back and refresh.");
                 return;
             }
-            
         } catch (Exception ex) {
-            System.out.println("Error in UploadReport.java - " + ex.getMessage());
+            System.out.println("Error in UploadCode.java - " + ex.getMessage());
             pw.println("And error occured. Please go back and try again.");
             return;
         }
         
-        String location = getServletContext().getRealPath("/") + "\\data\\ppts\\" + s.getAttribute("id") + ".pdf";
+        String location = getServletContext().getRealPath("/") + "\\data\\codes\\" + s.getAttribute("id") + ".rar";
         File report = new File(location);
         
         if (report.exists()) {
-            pw.println("You have already submitted the ppt.");
+            pw.println("You have already submitted the code.");
             return;
         }
         
-        String path = getServletContext().getRealPath("/") + "\\data\\ppts";
+        String path = getServletContext().getRealPath("/") + "\\data\\codes";
         Part filePart = request.getPart("file");
-        String fileName = s.getAttribute("id") + ".pdf";
+        String fileName = s.getAttribute("id") + ".rar";
         String uploadedFileName = App.getFileName(filePart);
         
-        if (!uploadedFileName.endsWith(".pdf")) {
-            pw.println("Please upload a .pdf file only.");
+        if (!uploadedFileName.endsWith(".rar")) {
+            pw.println("Please upload a .rar file only.");
             return;
         }
-        
+
         if (App.uploadFile(path, filePart, fileName)) {
             pw.println("File upload successfull. Please go back and refresh the page.");
         } else {

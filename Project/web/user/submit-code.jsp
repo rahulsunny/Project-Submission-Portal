@@ -9,12 +9,7 @@
         <link type="text/css" rel="stylesheet" href="../css/materialize.min.css"  media="screen,projection"/>
         <!--Let browser know website is optimized for mobile-->
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <style>
-            #directory .btn {
-                text-transform: none;
-            }
-        </style>
-        <link href="../css/submit-code.css" rel="stylesheet"/>
+        <link href="../css/global-styles.css" rel="stylesheet" type="text/css"/>
     </head>
     <body>
         <!-- SideNav -->
@@ -79,89 +74,59 @@
                         </div>
                     </div>
                 </div>
-            
-                <div class="col l12">
-                    <div class="card grey lighten-4">
-                        <div class="card-content">
-                            <span class="card-title">Your code directory</span>
-                            <br><br>
-                            <div id="directory"></div>
-                        </div>
-                    </div>
-                </div>
                 <div class="col l12">
                     <div class="card">
-                        <div class="card-content" style="padding: 0px;">
-                            <div class="row">
-                                <div class="col s12">
-                                    <ul class="tabs">
-                                        <li class="tab col s3"><a class="active" href="#add-directory">Add Directory</a></li>
-                                        <li class="tab col s3"><a href="#add-code-files">Add Code Files</a></li>
-                                        <li class="tab col s3"><a href="#delete-directory">Delete Directory</a></li>
-                                        <li class="tab col s3"><a href="#delete-code-files">Delete Code Files</a></li>
-                                    </ul>
-                                </div>
-                                <div id="add-directory" class="col s12" style="padding:35px;">
-                                    <form>
-                                        <div class="row">
-                                            <div class="input-field col s8">
-                                                <input id="first_name" type="text" class="validate">
-                                                <label for="first_name">New Directory Name</label>
+                        <div class="card-content">
+                            <%
+
+                                if (s.getAttribute("id") != null) {
+                                    String location = application.getRealPath("/") + "\\data\\codes\\" + s.getAttribute("id") + ".rar";
+                                    File ppt = new File(location);
+
+                                    if (ppt.exists()) {
+                                        String fileRelativeLocation = "../data/codes/" + s.getAttribute("id") + ".rar";
+                            %>
+                            <p>
+                                You have already submitted the code for your project. You can download it by <a href="<%= fileRelativeLocation %>" target="_tab">clicking here</a>.
+                            </p>
+                            <%
+                            } else {
+                            %>
+                            <span class="card-title">Submit Project Source Code</span>
+                            <form action="/Project/UploadCode" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col m6">
+                                        <div class="file-field input-field">
+                                            <div class="btn">
+                                                <span>File</span>
+                                                <input type="file" name="file" required="required">
                                             </div>
-                                        </div>
-                                        <a class="waves-effect waves-light btn">Add</a>
-                                    </form>
-                                </div>
-                                <div id="add-code-files" class="col s12" style="padding:35px;">
-                                    <form>
-                                        <div class="row">
-                                            <div class="col m6">
-                                                <div class="file-field input-field">
-                                                    <div class="btn">
-                                                        <span>File</span>
-                                                        <input type="file" multiple>
-                                                    </div>
-                                                    <div class="file-path-wrapper">
-                                                        <input class="file-path validate" type="text" placeholder="Select one/more code files">
-                                                    </div>
-                                                </div> 
+                                            <div class="file-path-wrapper">
+                                                <input class="file-path validate" type="text" placeholder="RAR format only">
                                             </div>
-                                        </div>
-                                        <a class="waves-effect waves-light btn">Add</a>
-                                    </form>
+                                        </div> 
+                                    </div>
                                 </div>
-                                <div id="delete-directory" class="col s12" style="padding:35px;">
-                                    <form>
-                                        <div class="row">
-                                            <div class="input-field col s12">
-                                                <select>
-                                                    <option value="" disabled selected>Choose your option</option>
-                                                    <option value="1">Codeforces</option>
-                                                    <option value="2">src</option>
-                                                </select>
-                                                <label>Select Directory</label>
-                                            </div>
-                                        </div>
-                                        <a class="waves-effect waves-light btn red">Delete</a>
-                                    </form>
+                                <br>
+                                <p>
+                                    <b>Note</b> - Submitted code cannot be altered later. Please verify very thoroughly before submission.
+                                </p>
+                                <div class="row">
+                                    <div class="input-field col m6">
+                                        <input id="password" name="password" type="password" class="validate" required="required"/>
+                                        <label for="password">Re-enter password</label>
+                                    </div>
                                 </div>
-                                <div id="delete-code-files" class="col s12" style="padding:35px;">
-                                    <form>
-                                        <div class="row">
-                                            <div class="input-field col s12">
-                                                <select multiple>
-                                                    <option value="" disabled selected>Choose your option</option>
-                                                    <option value="1">BrokenClock.java</option>
-                                                    <option value="2">CompleteTheWord.java</option>
-                                                    <option value="4">CompleteTheWordBrute.java</option>
-                                                </select>
-                                                <label>Select Code Files</label>
-                                            </div>
-                                        </div>
-                                        <a class="waves-effect waves-light btn red">Delete</a>
-                                    </form>
-                                </div>
-                            </div>
+                                <button type="submit" class="waves-effect waves-light btn">Submit</button>
+                            </form>
+                            <%
+                                }
+                            } else {
+                            %>
+                            <p>Please create a project for the current semester first.</p>
+                            <%
+                                }
+                            %>
                         </div>
                     </div>
                 </div>
@@ -214,20 +179,6 @@
             $(document).ready(function () {
                 $('select').material_select();
             });
-            
-            $(document).ready(function () {
-                getDirectoryDetails("");
-            });
-            
-            function getDirectoryDetails(data) {
-                $.get("/Project/DirectoryDetails", {
-                    path : data
-                }, getDirectoryDetailsCallback);
-            }
-            
-            function getDirectoryDetailsCallback(data) {
-                $("#directory").html(data);
-            }
         </script>
     </body>
 </html>

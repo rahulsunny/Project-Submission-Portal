@@ -4,11 +4,10 @@
 
 /* ========== About App.java ==========
 
-Contains all the global config variables and
-methods which are frequently used as basic operations
+ Contains all the global config variables and
+ methods which are frequently used as basic operations
 
-========== ========== ========== ========== */
-
+ ========== ========== ========== ========== */
 package classes;
 
 import java.io.File;
@@ -55,23 +54,23 @@ public class App {
                 for (String word : words) {
                     if (word.length() > 0) {
                         word = word.toLowerCase();
-                        
+
                         if (PROJECT_TITLE_DICT.containsKey(word)) {
                             PROJECT_TITLE_DICT.get(word).add(id);
                         } else {
                             ArrayList<Integer> arr = new ArrayList<>();
-                            
+
                             arr.add(id);
                             PROJECT_TITLE_DICT.put(word, arr);
                         }
                     }
                 }
-                
+
                 if (PROJECT_GUIDE_DICT.containsKey(guideId)) {
                     PROJECT_GUIDE_DICT.get(guideId).add(id);
                 } else {
                     ArrayList<Integer> arr = new ArrayList<>();
-                    
+
                     arr.add(id);
                     PROJECT_GUIDE_DICT.put(guideId, arr);
                 }
@@ -79,25 +78,25 @@ public class App {
 
             rs.close();
             st.close();
-            
+
             st = con.createStatement();
             rs = st.executeQuery("select * from project_keywords");
-            
+
             while (rs.next()) {
                 int projectId = rs.getInt("project_id");
                 int keywordId = rs.getInt("keyword_id");
-                
+
                 // mapping from keyword to project
                 if (PROJECT_KEYWORDS_DICT.containsKey(keywordId)) {
                     PROJECT_KEYWORDS_DICT.get(keywordId).add(projectId);
                 } else {
                     ArrayList<Integer> arr = new ArrayList<>();
-                    
+
                     arr.add(projectId);
                     PROJECT_KEYWORDS_DICT.put(keywordId, arr);
                 }
             }
-            
+
             rs.close();
             st.close();
             con.close();
@@ -128,12 +127,22 @@ public class App {
             if (out != null) {
                 out.close();
             }
-            
+
             if (filecontent != null) {
                 filecontent.close();
             }
         }
 
         return true;
+    }
+
+    public static String getFileName(final Part part) {
+        for (String content : part.getHeader("content-disposition").split(";")) {
+            if (content.trim().startsWith("filename")) {
+                return content.substring(content.indexOf('=') + 1).trim().replace("\"", "");
+            }
+        }
+        
+        return null;
     }
 }

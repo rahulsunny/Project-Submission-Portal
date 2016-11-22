@@ -95,8 +95,11 @@ public class AddProject extends HttpServlet {
         String description = request.getParameter("description");
         int guide = Integer.parseInt(request.getParameter("guide"));
         String[] keywords = request.getParameterValues("keywords");
-
-        if (keywords.length > 3) {
+        
+        if (keywords == null) {
+            pw.println("No keywords choosen.");
+            return;
+        } else if (keywords.length > 3) {
             pw.println("Too many keywords choosen.");
             return;
         }
