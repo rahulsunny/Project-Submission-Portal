@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Admin Home | Project Submission Portal | IIITA</title>
+        <title>Delete Project | Project Submission Portal | IIITA</title>
         <!--Import Google Icon Font-->
         <link href="../fonts/iconfont/material-icons.css" rel="stylesheet"/>
         <!--Import materialize.css-->

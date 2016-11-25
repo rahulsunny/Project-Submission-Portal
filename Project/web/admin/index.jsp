@@ -40,7 +40,7 @@
                     <h5>Manage Project Guides</h5>
                     <div class="collection with-header">
                         <a href="#!" class="collection-item waves-effect waves-d">Add a new guide</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Change availability of existing guides</a>
+                        <a href="guides-availability.jsp" class="collection-item waves-effect waves-d">Change availability of existing guides</a>
                         <a href="#!" class="collection-item waves-effect waves-d">Edit a guide's name</a>
                     </div>
                 </div>

@@ -70,7 +70,7 @@ create table projects
 (
 	id number(*, 0) constraint PROJECTS_ID_PK primary key,
 	project_date date constraint PROJECTS_DATE_NN not null,
-	title varchar2(100) constraint PROJECTS_TITLE_NN unique,
+	title varchar2(100) constraint PROJECTS_TITLE_UNIQUE unique,
 	guide_id number(*, 0),
 	description varchar2(1000) constraint PROJECTS_DESC_NN not null,
 	locked varchar2(1) constraint PROJECTS_LOCKED_CHECK check(locked = 'Y' or locked = 'N'),
@@ -94,7 +94,7 @@ create table project_members
 create table keywords 
 (
 	id number(*, 0) constraint KEYWORDS_ID_PK primary key,
-	keyword varchar2(50) constraint KEYWORDS_KEYWORD_NN not null
+	keyword varchar2(50) constraint KEYWORDS_KEYWORD_UNIQUE unique
 );
 
 create sequence keywords_id_seq 
