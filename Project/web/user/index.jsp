@@ -1,4 +1,4 @@
-<%@page import="classes.App, java.sql.*, java.time.*, java.time.format.* "%>
+<%@page import="classes.App, java.sql.*, java.time.*, java.time.format.*, java.io.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -80,7 +80,7 @@
                     <div class="card grey lighten-5">
                         <div class="card-content">
                             <span class="card-title"><%= rs.getString("title")%></span><br>
-                            <small><%= project_date %></small><br><br>
+                            <small><%= project_date%></small><br><br>
                             <p><%= rs.getString("description")%></p>
                             <br>
                             <p>Project Group Members -</p>
@@ -126,9 +126,40 @@
                                 %>
                         </div>
                         <div class="card-action">
-                            <a href="#" class="waves-effect waves-d btn white black-text">Download Project Report</a>
-                            <a href="#" class="waves-effect waves-d btn white black-text">Download PPT</a>
-                            <a href="#" class="waves-effect waves-d btn white black-text">Download Code</a>
+                            <%
+                                String location;
+                                File file;
+
+                                location = getServletContext().getRealPath("/") + "\\data\\reports\\" + rs.getString("id") + ".pdf";
+                                file = new File(location);
+
+                                if (file.exists()) {
+                                    String relativeLocation = "../data/reports/" + rs.getString("id") + ".pdf";
+                            %>
+                            <a href="<%= relativeLocation%>" target="_tab" class="waves-effect waves-d btn white black-text">View Project Report</a> &nbsp; 
+                            <%
+                                }
+
+                                location = getServletContext().getRealPath("/") + "\\data\\ppts\\" + rs.getString("id") + ".pdf";
+                                file = new File(location);
+
+                                if (file.exists()) {
+                                    String relativeLocation = "../data/ppts/" + rs.getString("id") + ".pdf";
+                            %>
+                            <a href="<%= relativeLocation%>" target="_tab" class="waves-effect waves-d btn white black-text">View Project Presentation</a> &nbsp; 
+                            <%
+                                }
+
+                                location = getServletContext().getRealPath("/") + "\\data\\codes\\" + rs.getString("id") + ".rar";
+                                file = new File(location);
+
+                                if (file.exists()) {
+                                    String relativeLocation = "../data/codes/" + rs.getString("id") + ".rar";
+                            %>
+                            <a href="<%= relativeLocation%>" target="_tab" class="waves-effect waves-d btn white black-text">Download Source Code</a>
+                            <%
+                                }
+                            %>
                         </div>
                     </div>
                     <%
@@ -136,10 +167,10 @@
 
                         con.close();
                     } catch (Exception ex) {
-                        %>
-                        <p><%= ex.getMessage() %></p>
-                        <%
-                    }
+                    %>
+                    <p><%= ex.getMessage()%></p>
+                    <%
+                        }
                     %>
                 </div>
             </div>

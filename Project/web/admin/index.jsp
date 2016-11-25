@@ -30,12 +30,9 @@
                 <div class="col s12">
                     <h5>Manage Student Project Records</h5>
                     <div class="collection with-header">
-                        <a href="delete-project.jsp" class="collection-item waves-effect waves-d">Delete a semester project</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Delete the submitted report of a project</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Delete the submitted PPT of a project</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Delete the submitted code for a project</a>
+                        <a href="delete-project.jsp" class="collection-item waves-effect waves-d">Delete a full Project / Report / PPT / Code</a>
                         <a href="#!" class="collection-item waves-effect waves-d">Delete a project member</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Re-assign a project member to another project</a>
+                        <a href="#!" class="collection-item waves-effect waves-d">Add a member to a project</a>
                         <a href="#!" class="collection-item waves-effect waves-d">Lock projects</a>
                     </div>
                 </div>

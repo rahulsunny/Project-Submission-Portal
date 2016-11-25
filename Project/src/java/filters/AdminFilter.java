@@ -109,7 +109,7 @@ public class AdminFilter implements Filter {
             HttpServletResponse resp = (HttpServletResponse) response;
             
             System.out.println("Admin Filter not ok");
-            resp.sendRedirect("/Project/");
+            resp.sendRedirect("/Project/admin-login.html");
         } else {
             System.out.println("Filter ok");
             chain.doFilter(request, response);

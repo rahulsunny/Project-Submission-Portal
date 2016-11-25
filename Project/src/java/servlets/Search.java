@@ -8,6 +8,7 @@ package servlets;
 import classes.App;
 import classes.Project;
 import com.google.gson.Gson;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -92,7 +93,7 @@ public class Search extends HttpServlet {
         String[] keywords = request.getParameterValues("keywords[]");
         String[] guides = request.getParameterValues("guides[]");
         HashMap<Integer, Integer> map = new HashMap<>();
-        
+
         if (title != null && title.trim().length() > 0) {
             title = title.trim();
             String[] words = title.split("[ ]");
@@ -118,25 +119,7 @@ public class Search extends HttpServlet {
 
         if (keywords != null) {
             for (String keywordId : keywords) {
-                System.out.println("Keyword id = " + keywordId);
                 ArrayList<Integer> projects = App.PROJECT_KEYWORDS_DICT.get(Integer.parseInt(keywordId));
-                System.out.println("project ids for keywords = " + projects);
-                if (projects != null) {
-                    for (int id : projects) {
-                        if (map.containsKey(id)) {
-                            map.put(id, map.get(id) + 1);
-                        } else {
-                            map.put(id, 1);
-                        }
-                    }
-                }
-            }
-        }
-        
-        if (guides != null) {
-            for (String guide : guides) {
-                int guideId = Integer.parseInt(guide);
-                ArrayList<Integer> projects = App.PROJECT_GUIDE_DICT.get(guideId);
                 
                 if (projects != null) {
                     for (int id : projects) {
@@ -149,7 +132,24 @@ public class Search extends HttpServlet {
                 }
             }
         }
-        
+
+        if (guides != null) {
+            for (String guide : guides) {
+                int guideId = Integer.parseInt(guide);
+                ArrayList<Integer> projects = App.PROJECT_GUIDE_DICT.get(guideId);
+
+                if (projects != null) {
+                    for (int id : projects) {
+                        if (map.containsKey(id)) {
+                            map.put(id, map.get(id) + 1);
+                        } else {
+                            map.put(id, 1);
+                        }
+                    }
+                }
+            }
+        }
+
         if (map.isEmpty()) {
             pw.println("{\"fail\":\"No projects found.\"}");
             return;
@@ -180,7 +180,7 @@ public class Search extends HttpServlet {
                 while (rs.next()) {
                     String project_date = rs.getDate("project_date").toLocalDate().format(DateTimeFormatter.ofPattern("MMMM dd, uuuu"));
                     String guide = "NA";
-                    
+
                     // Query for guide name
                     {
                         String guideQuery = "select name from guides where id = ?";
@@ -197,8 +197,9 @@ public class Search extends HttpServlet {
                         guideResultSet.close();
                         guideStatement.close();
                     }
-                    
+
                     Project project = new Project(
+                            id,
                             project_date,
                             rs.getString("title"),
                             guide,
@@ -240,10 +241,27 @@ public class Search extends HttpServlet {
                         keywordsResultSet.close();
                         keywordsStatement.close();
                     }
+
+                    // check for report, ppt, code
+                    String location = getServletContext().getRealPath("/") + "\\data\\reports\\" + id + ".pdf";;
+                    File file = new File(location);
+
+                    if (file.exists()) {
+                        project.reportLocation = "../data/reports/" + id + ".pdf";
+                    }
+
+                    location = getServletContext().getRealPath("/") + "\\data\\ppts\\" + id + ".pdf";
+                    file = new File(location);
+
+                    if (file.exists()) {
+                        project.pptLocation = "../data/ppts/" + id + ".pdf";
+                    }
+
+                    location = getServletContext().getRealPath("/") + "\\data\\codes\\" + id + ".rar";
+                    file = new File(location);
                     
-                    // adding project id if it is the admin
-                    if (s.getAttribute("admin") != null) {
-                        project.id = id;
+                    if (file.exists()) {
+                        project.codeLocation = "../data/codes/" + id + ".rar";
                     }
 
                     results.add(project);

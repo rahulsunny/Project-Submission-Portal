@@ -1,28 +1,15 @@
-/* ========== ========== ========== */
-//       Author - Vamsi Sangam      //
-/* ========== ========== ========== */
-
-/* ========== About Project.java ==========
-
-
-
- ========== ========== ========== ========== */
 package classes;
 
 import java.util.ArrayList;
 
 public class Project {
-    public int id = -1;
-    public String project_date;
-    public String title;
-    public String guide;
-    public String description;
-    public String locked;
-    public ArrayList<String> memberNames;
-    public ArrayList<String> memberRollNumbers;
-    public ArrayList<String> keywords;
+    public int id;
+    public String project_date, title, guide, description, locked;
+    public ArrayList<String> memberNames, memberRollNumbers, keywords;
+    public String reportLocation, pptLocation, codeLocation;
 
-    public Project(String project_date, String title, String guide, String description, String locked) {
+    public Project(int id, String project_date, String title, String guide, String description, String locked) {
+        this.id = id;
         this.project_date = project_date;
         this.title = title;
         this.guide = guide;
@@ -32,5 +19,4 @@ public class Project {
         memberRollNumbers = new ArrayList<>();
         keywords = new ArrayList<>();
     }
-
 }

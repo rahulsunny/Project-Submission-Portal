@@ -127,9 +127,9 @@ public class UploadCode extends HttpServlet {
         }
         
         String location = getServletContext().getRealPath("/") + "\\data\\codes\\" + s.getAttribute("id") + ".rar";
-        File report = new File(location);
+        File code = new File(location);
         
-        if (report.exists()) {
+        if (code.exists()) {
             pw.println("You have already submitted the code.");
             return;
         }

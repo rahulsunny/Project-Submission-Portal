@@ -30,12 +30,9 @@
                 <div class="col s12">
                     <h5>Manage Student Project Records</h5>
                     <div class="collection with-header">
-                        <a href="#!" class="collection-item waves-effect waves-d active">Delete a semester project</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Delete the submitted report of a project</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Delete the submitted PPT of a project</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Delete the submitted code for a project</a>
+                        <a href="#!" class="collection-item waves-effect waves-d">Delete a full Project / Report / PPT / Code</a>
                         <a href="#!" class="collection-item waves-effect waves-d">Delete a project member</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Re-assign a project member to another project</a>
+                        <a href="#!" class="collection-item waves-effect waves-d">Add a member to a project</a>
                         <a href="#!" class="collection-item waves-effect waves-d">Lock projects</a>
                         <a href="/Project/admin/" class="collection-item waves-effect waves-d"> &larr; &nbsp; Go back</a>
                     </div>
@@ -223,12 +220,21 @@
 
                                             html = html + keywordsString + '</div>' +
                                                     '<div class="card-action">' +
-                                                    '<form method="post" action="/Project/DeleteProject">' +
-                                                    '<input type="hidden" name="id" value="' + data[index].id + '"/>' +
-                                                    '<button type="submit" class="btn red waves-effect waves-d">Delete this project</button>' +
-                                                    '</form>' +
-                                                    '</div>';
+                                                    '<a href="/Project/DeleteProject?id=' + data[index].id + '" class="btn red waves-effect waves-d">Delete Project</a> &nbsp; ';
 
+                                            if (data[index].reportLocation) {
+                                                html += '<a href="/Project/DeleteReport?id=' + data[index].id + '" class="btn red waves-effect waves-d">Delete Report</a> &nbsp; ';
+                                            }
+
+                                            if (data[index].pptLocation) {
+                                                html += '<a href="/Project/DeletePPT?id=' + data[index].id + '" class="btn red waves-effect waves-d">Delete PPT</a> &nbsp; ';
+                                            }
+
+                                            if (data[index].codeLocation) {
+                                                html += '<a href="/Project/DeleteCode?id=' + data[index].id + '" class="btn red waves-effect waves-d">Delete Code</a>';
+                                            }
+
+                                            html += '</div>';
                                             $('#results').append(html);
                                         });
 

@@ -152,9 +152,40 @@
                                 %>
                         </div>
                         <div class="card-action">
-                            <a href="#" class="waves-effect waves-d btn white black-text">Download Project Report</a>
-                            <a href="#" class="waves-effect waves-d btn white black-text">Download PPT</a>
-                            <a href="#" class="waves-effect waves-d btn white black-text">Download Code</a>
+                            <%
+                                String location;
+                                File file;
+
+                                location = getServletContext().getRealPath("/") + "\\data\\reports\\" + rs.getString("id") + ".pdf";
+                                file = new File(location);
+
+                                if (file.exists()) {
+                                    String relativeLocation = "../data/reports/" + rs.getString("id") + ".pdf";
+                            %>
+                            <a href="<%= relativeLocation%>" target="_tab" class="waves-effect waves-d btn white black-text">View Project Report</a> &nbsp; 
+                            <%
+                                }
+
+                                location = getServletContext().getRealPath("/") + "\\data\\ppts\\" + rs.getString("id") + ".pdf";
+                                file = new File(location);
+
+                                if (file.exists()) {
+                                    String relativeLocation = "../data/ppts/" + rs.getString("id") + ".pdf";
+                            %>
+                            <a href="<%= relativeLocation%>" target="_tab" class="waves-effect waves-d btn white black-text">View Project Presentation</a> &nbsp; 
+                            <%
+                                }
+
+                                location = getServletContext().getRealPath("/") + "\\data\\codes\\" + rs.getString("id") + ".rar";
+                                file = new File(location);
+
+                                if (file.exists()) {
+                                    String relativeLocation = "../data/codes/" + rs.getString("id") + ".rar";
+                            %>
+                            <a href="<%= relativeLocation%>" target="_tab" class="waves-effect waves-d btn white black-text">Download Source Code</a>
+                            <%
+                                }
+                            %>
                         </div>
                     </div>
                     <%

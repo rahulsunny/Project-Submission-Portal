@@ -65,8 +65,9 @@
                     <div class="card">
                         <div class="card-content">
                             <p>
-                                <b>Note</b> - You can search for a previous project by project title or by the topic (keywords). You can search by
-                                all of them or none of them. If you choose no parameters, all the projects are displayed.
+                                <b>Note</b> - You can search for a previous project by project title or by the topic (keywords) or by a specific guide.
+                                Select at least one value in any parameter to view the projects which meet the criteria. If no value is given no projects
+                                will be displayed.
                             </p> 
                         </div>
                     </div>
@@ -203,7 +204,7 @@
                                                 {
                                                     title: $('input[name="title"]').val(),
                                                     keywords: $('select[name="keywords"]').val(),
-                                                    guides : $('select[name="guides"]').val()
+                                                    guides: $('select[name="guides"]').val()
                                                 }, searchProjectsCallback);
                                     }
 
@@ -222,12 +223,12 @@
 
                                         $(data).each(function (index) {
                                             var lock = '';
-                                            
+
                                             if (data[index].locked === "Y") {
                                                 lock = '<a class="tooltipped right-align" data-position="right" data-delay="50" data-tooltip="This project has been completed and evaluated.">' +
-                                                    '<span style="font-size:19pt;"><i class="tiny material-icons">done</i></span></a>';
+                                                        '<span style="font-size:19pt;"><i class="tiny material-icons">done</i></span></a>';
                                             }
-                                            
+
                                             var html =
                                                     '<div class="card grey lighten-5">' +
                                                     '<div class="card-content">' +
@@ -254,16 +255,24 @@
                                             });
 
                                             html = html + keywordsString + '</div>' +
-                                                    '<div class="card-action">' +
-                                                    '<a href="#" class="waves-effect waves-d btn white black-text">Download Project Report</a> &nbsp; ' +
-                                                    '<a href="#" class="waves-effect waves-d btn white black-text">Download PPT</a> &nbsp; ' +
-                                                    '<a href="#" class="waves-effect waves-d btn white black-text">Download Code</a> &nbsp; ' +
-                                                    '</div>' +
-                                                    '</div>';
+                                                    '<div class="card-action">';
 
+                                            if (data[index].reportLocation) {
+                                                html += '<a href="' + data[index].reportLocation + '" target="_tab" class="waves-effect waves-d btn white black-text">View Project Report</a> &nbsp; ';
+                                            }
+
+                                            if (data[index].pptLocation) {
+                                                html += '<a href="' + data[index].pptLocation + '" target="_tab" class="waves-effect waves-d btn white black-text">View Project Presentation</a> &nbsp; ';
+                                            }
+
+                                            if (data[index].codeLocation) {
+                                                html += '<a href="' + data[index].codeLocation + '" target="_tab" class="waves-effect waves-d btn white black-text">Download Source Code</a> &nbsp; ';
+                                            }
+
+                                            html += '</div></div>';
                                             $('#results').append(html);
                                         });
-                                        
+
                                         $('.tooltipped').tooltip({delay: 50});
                                     }
         </script>

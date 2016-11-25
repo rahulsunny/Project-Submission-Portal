@@ -5,8 +5,7 @@
  */
 package servlets;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
@@ -20,8 +19,8 @@ import javax.servlet.http.HttpSession;
  *
  * @author Vamsi
  */
-@WebServlet(name = "AdminValidate", urlPatterns = {"/AdminValidate"})
-public class AdminValidate extends HttpServlet {
+@WebServlet(name = "DeleteReport", urlPatterns = {"/DeleteReport"})
+public class DeleteReport extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +39,10 @@ public class AdminValidate extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AdminValidate</title>");
+            out.println("<title>Servlet DeleteReport</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AdminValidate at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet DeleteReport at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,7 +60,38 @@ public class AdminValidate extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        HttpSession s = request.getSession();
+
+        if (s.getAttribute("admin") == null) {
+            s.invalidate();
+            response.sendRedirect("/Project/admin-login.html");
+            return;
+        }
+
+        response.setContentType("text/plain");
+        PrintWriter pw = response.getWriter();
+
+        try {
+            int id = Integer.parseInt(request.getParameter("id"));
+
+            String location;
+            File file;
+
+            location = getServletContext().getRealPath("/") + "\\data\\reports\\" + id + ".pdf";
+            file = new File(location);
+
+            if (file.exists()) {
+                if (file.delete()) {
+                    pw.println("Project report successfully deleted.");
+                } else {
+                    pw.println("Could not delete project report.");
+                }
+            } else {
+                pw.println("No project report found.");
+            }
+        } catch (Exception ex) {
+            pw.println("Error occured - " + ex.getMessage());
+        }
     }
 
     /**
@@ -75,37 +105,7 @@ public class AdminValidate extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-
-        if (username == null || password == null) {
-            System.out.println("One of them is null");
-            response.sendRedirect("/Project/admin-login.html");
-        }
-
-        String rightUsername = null, rightPassword = null;
-        BufferedReader br = null;
-
-        try {
-            br = new BufferedReader(new FileReader(getServletContext().getRealPath("/") + "/../../data.txt"));
-            rightUsername = br.readLine();
-            rightPassword = br.readLine();
-        } catch (Exception ex) {
-            System.out.println("Error in AdminValidate - " + ex.getMessage());
-        } finally {
-            br.close();
-        }
-        
-        if (rightUsername.equals(username) && rightPassword.equals(rightPassword)) {
-            PrintWriter pw = response.getWriter();
-            HttpSession s = request.getSession();
-            
-            s.setMaxInactiveInterval(5 * 60);   // 5 minutes
-            s.setAttribute("admin", "authenticated");
-            response.sendRedirect("/Project/admin/");
-        } else {
-            response.sendRedirect("/Project/admin-login.html");
-        }
+        processRequest(request, response);
     }
 
     /**

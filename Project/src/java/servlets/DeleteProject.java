@@ -9,6 +9,7 @@ import classes.App;
 import static classes.App.PROJECT_TITLE_DICT;
 import static classes.App.PROJECT_GUIDE_DICT;
 import static classes.App.PROJECT_KEYWORDS_DICT;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -43,7 +44,7 @@ public class DeleteProject extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
+            /* TODO output your page here. You may use following sample file. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
@@ -56,7 +57,7 @@ public class DeleteProject extends HttpServlet {
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the file.">
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -68,7 +69,7 @@ public class DeleteProject extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        doPost(request, response);
     }
 
     /**
@@ -149,28 +150,57 @@ public class DeleteProject extends HttpServlet {
                     PROJECT_TITLE_DICT.get(word).remove(new Integer(id));
                 }
             }
-            
+
             pw.println("Project with title \"" + title + "\" successfully removed from search.");
-            
-            
-            // check and delete if project has code
-                // code
-            
+
+            // check and delete if project has file
+            String location = getServletContext().getRealPath("/") + "\\data\\codes\\" + id + ".rar";
+            File file = new File(location);
+
+            if (file.exists()) {
+                if (file.delete()) {
+                    pw.println("Project with title \"" + title + "\" source code deleted successfully.");
+                } else {
+                    pw.println("Project with title \"" + title + "\" source code could not be deleted. Returning.");
+                    return;
+                }
+            }
+
             // check and delete if project has ppt
-                // code
+            location = getServletContext().getRealPath("/") + "\\data\\ppts\\" + id + ".pdf";
+            file = new File(location);
+            
+            if (file.exists()) {
+                if (file.delete()) {
+                    pw.println("Project with title \"" + title + "\" ppt deleted successfully.");
+                } else {
+                    pw.println("Project with title \"" + title + "\" ppt could not be deleted. Returning.");
+                    return;
+                }
+            }
             
             // check and delete if project has report
-                // code
+            location = getServletContext().getRealPath("/") + "\\data\\reports\\" + id + ".pdf";
+            file = new File(location);
+            
+            if (file.exists()) {
+                if (file.delete()) {
+                    pw.println("Project with title \"" + title + "\" report deleted successfully.");
+                } else {
+                    pw.println("Project with title \"" + title + "\" report could not be deleted. Returning.");
+                    return;
+                }
+            }
             
             pst = con.prepareStatement("delete from projects where id = ?");
             pst.setInt(1, id);
-            
+
             if (pst.executeUpdate() == 1) {
                 pw.println("Project with title \"" + title + "\" successfully removed from database.");
             } else {
                 pw.println("Project with title \"" + title + "\" could not be removed from database. PreparedStatement.executeUpdate() returned 0");
             }
-            
+
             pst.close();
             con.close();
         } catch (Exception ex) {
