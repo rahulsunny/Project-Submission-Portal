@@ -1,6 +1,12 @@
+<%-- 
+    Document   : add-keyword
+    Created on : Nov 23, 2016, 8:55:55 PM
+    Author     : rahul sunny
+--%>
 <%@page import="classes.App, java.sql.*, java.time.*, java.time.format.*"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
+
 <html>
     <head>
         <title>Admin Home | Project Submission Portal | IIITA</title>
@@ -28,29 +34,29 @@
         <div class="container">
             <div class="row">
                 <div class="col s12">
-                    <h5>Manage Student Project Records</h5>
-                    <div class="collection with-header">
-                        <a href="delete-project.jsp" class="collection-item waves-effect waves-d">Delete a full Project / Report / PPT / Code</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Delete a project member</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Re-assign a project member to another project</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Lock projects</a>
-                    </div>
-                </div>
-                <div class="col s12">
-                    <h5>Manage Project Guides</h5>
-                    <div class="collection with-header">
-                        <a href="#!" class="collection-item waves-effect waves-d">Add a new guide</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Change availability of existing guides</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Edit a guide's name</a>
-                    </div>
-                </div>
-                <div class="col s12">
                     <h5>Manage Project Keywords</h5>
                     <div class="collection with-header">
-                        <a href="add-keyword.jsp" class="collection-item waves-effect waves-d">Add a new keyword</a>
+                        <a href="#!" class="collection-item waves-effect waves-d">Add a new keyword</a>
                         <a href="edit-keyword.jsp" class="collection-item waves-effect waves-d">Edit an existing keyword</a>
+                        <a href="/Project/admin/" class="collection-item waves-effect waves-d"> &larr; &nbsp; Go back</a>  
                     </div>
                 </div>
+                <div class="col s12">
+                    <div class="card">
+                        <div class="card-content">
+                            <form method="post" action="/Project/AddKeyword">
+                                <span class="card-title">Add Keyword</span>
+                                <div class="row">
+                                    <div class="input-field col s8">
+                                        <input id="Addkeyword" type="text" name="Addkeyword" class="validate">
+                                        <label for="Addkeyword">Enter Keyword</label>
+                                    </div>
+                                </div>
+                                <button type="Submit" class="waves-effect waves-light btn" >Add</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>    
             </div>
         </div>
         <footer class="page-footer light-blue">
@@ -84,5 +90,21 @@
         <!--Import jQuery before materialize.js-->
         <script type="text/javascript" src="../js/jquery-3.1.0.min.js"></script>
         <script type="text/javascript" src="../js/materialize.min.js"></script>
+        <script>
+            // Initialize collapse button
+            $(".navbar-button").sideNav();
+            // Initialize collapsible (uncomment the line below if you use the dropdown variation)
+            //$('.collapsible').collapsible();
+
+            // Init select form element
+            $(document).ready(function() {
+                $('select').material_select();
+            });
+
+            $(document).ready(function() {
+                $('ul.tabs').tabs();
+            });
+
+        </script>
     </body>
 </html>

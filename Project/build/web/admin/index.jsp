@@ -32,7 +32,7 @@
                     <div class="collection with-header">
                         <a href="delete-project.jsp" class="collection-item waves-effect waves-d">Delete a full Project / Report / PPT / Code</a>
                         <a href="#!" class="collection-item waves-effect waves-d">Delete a project member</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Add a member to a project</a>
+                        <a href="#!" class="collection-item waves-effect waves-d">Re-assign a project member to another project</a>
                         <a href="#!" class="collection-item waves-effect waves-d">Lock projects</a>
                     </div>
                 </div>
@@ -40,15 +40,15 @@
                     <h5>Manage Project Guides</h5>
                     <div class="collection with-header">
                         <a href="#!" class="collection-item waves-effect waves-d">Add a new guide</a>
-                        <a href="guides-availability.jsp" class="collection-item waves-effect waves-d">Change availability of existing guides</a>
+                        <a href="#!" class="collection-item waves-effect waves-d">Change availability of existing guides</a>
                         <a href="#!" class="collection-item waves-effect waves-d">Edit a guide's name</a>
                     </div>
                 </div>
                 <div class="col s12">
                     <h5>Manage Project Keywords</h5>
                     <div class="collection with-header">
-                        <a href="#!" class="collection-item waves-effect waves-d">Add a new keyword</a>
-                        <a href="#!" class="collection-item waves-effect waves-d">Edit an existing keyword</a>
+                        <a href="add-keyword.jsp" class="collection-item waves-effect waves-d">Add a new keyword</a>
+                        <a href="edit-keyword.jsp" class="collection-item waves-effect waves-d">Edit an existing keyword</a>
                     </div>
                 </div>
             </div>
